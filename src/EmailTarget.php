@@ -54,6 +54,13 @@ class EmailTarget extends Target
     protected $mailer = 'mailer';
 
 
+    /**
+     * EmailTarget constructor
+     *
+     * @param MailerInterface $mailer
+     * @param array $message
+     * @throws InvalidConfigException
+     */
     public function __construct(MailerInterface $mailer, array $message)
     {
         $this->mailer = $mailer;
