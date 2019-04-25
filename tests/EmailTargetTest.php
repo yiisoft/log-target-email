@@ -5,9 +5,9 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace Yii\Log\Tests;
+namespace Yiisoft\Log\Tests;
 
-use Yii\Log\EmailTarget;
+use Yiisoft\Log\EmailTarget;
 use yii\mail\BaseMailer;
 use yii\tests\TestCase;
 
@@ -36,7 +36,7 @@ class EmailTargetTest extends TestCase
     }
 
     /**
-     * @covers \Yii\Log\EmailTarget::__construct()
+     * @covers \Yiisoft\Log\EmailTarget::__construct()
      */
     public function testConstructWithOptionTo()
     {
@@ -45,7 +45,7 @@ class EmailTargetTest extends TestCase
     }
 
     /**
-     * @covers \Yii\Log\EmailTarget::__construct()
+     * @covers \Yiisoft\Log\EmailTarget::__construct()
      * @expectedException \yii\exceptions\InvalidConfigException
      * @expectedExceptionMessage The "to" option must be set for EmailTarget::message.
      */
@@ -55,8 +55,8 @@ class EmailTargetTest extends TestCase
     }
 
     /**
-     * @covers \Yii\Log\EmailTarget::export()
-     * @covers \Yii\Log\EmailTarget::composeMessage()
+     * @covers \Yiisoft\Log\EmailTarget::export()
+     * @covers \Yiisoft\Log\EmailTarget::composeMessage()
      */
     public function testExportWithSubject()
     {
@@ -76,7 +76,7 @@ class EmailTargetTest extends TestCase
         $message->expects($this->once())->method('send')->with($this->equalTo($this->mailer));
         $message->expects($this->once())->method('setSubject')->with($this->equalTo('Hello world'));
 
-        $mailTarget = $this->getMockBuilder('Yii\\Log\\EmailTarget')
+        $mailTarget = $this->getMockBuilder('Yiisoft\\Log\\EmailTarget')
             ->setMethods(['formatMessage'])
             ->setConstructorArgs([
                 'mailer' => $this->mailer,
@@ -98,8 +98,8 @@ class EmailTargetTest extends TestCase
     }
 
     /**
-     * @covers \Yii\Log\EmailTarget::export()
-     * @covers \Yii\Log\EmailTarget::composeMessage()
+     * @covers \Yiisoft\Log\EmailTarget::export()
+     * @covers \Yiisoft\Log\EmailTarget::composeMessage()
      */
     public function testExportWithoutSubject()
     {
@@ -119,7 +119,7 @@ class EmailTargetTest extends TestCase
         $message->expects($this->once())->method('send')->with($this->equalTo($this->mailer));
         $message->expects($this->once())->method('setSubject')->with($this->equalTo('Application Log'));
 
-        $mailTarget = $this->getMockBuilder('Yii\\Log\\EmailTarget')
+        $mailTarget = $this->getMockBuilder('Yiisoft\\Log\\EmailTarget')
             ->setMethods(['formatMessage'])
             ->setConstructorArgs([
                 'mailer' => $this->mailer,
@@ -140,7 +140,7 @@ class EmailTargetTest extends TestCase
     }
 
     /**
-     * @covers \Yii\Log\EmailTarget::export()
+     * @covers \Yiisoft\Log\EmailTarget::export()
      *
      * See https://github.com/yiisoft/yii2/issues/14296
      */
@@ -151,7 +151,7 @@ class EmailTargetTest extends TestCase
             ->getMockForAbstractClass();
         $message->method('send')->willReturn(false);
         $this->mailer->expects($this->once())->method('compose')->willReturn($message);
-        $mailTarget = $this->getMockBuilder('Yii\\Log\\EmailTarget')
+        $mailTarget = $this->getMockBuilder('Yiisoft\\Log\\EmailTarget')
             ->setMethods(['formatMessage'])
             ->setConstructorArgs([
                 'mailer' => $this->mailer,
@@ -160,7 +160,7 @@ class EmailTargetTest extends TestCase
                 ],
             ])
             ->getMock();
-        $this->expectException('Yii\Log\LogRuntimeException');
+        $this->expectException('Yiisoft\Log\LogRuntimeException');
         $mailTarget->export();
     }
 }

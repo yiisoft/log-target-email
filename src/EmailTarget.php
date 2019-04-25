@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace Yii\Log;
+namespace Yiisoft\Log;
 
 use yii\di\AbstractContainer;
 use yii\exceptions\InvalidConfigException;
@@ -23,7 +23,7 @@ use yii\mail\MessageInterface;
  *     'log' => [
  *          'targets' => [
  *              [
- *                  '__class' => \Yii\Log\EmailTarget::class,
+ *                  '__class' => \Yiisoft\Log\EmailTarget::class,
  *                  'mailer' => 'mailer',
  *                  'levels' => ['error', 'warning'],
  *                  'message' => [
