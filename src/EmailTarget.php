@@ -1,10 +1,4 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
-
 namespace Yiisoft\Log;
 
 use yii\di\AbstractContainer;
@@ -38,8 +32,6 @@ use yii\mail\MessageInterface;
  * ```
  *
  * In the above `mailer` is ID of the component that sends email and should be already configured.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
  */
 class EmailTarget extends Target
 {
@@ -82,7 +74,7 @@ class EmailTarget extends Target
         if (empty($this->message['subject'])) {
             $this->message['subject'] = 'Application Log';
         }
-        $messages = array_map([$this, 'formatMessage'], $this->messages);
+        $messages = array_map([$this, 'formatMessage'], $this->getMessages());
         $body = wordwrap(implode("\n", $messages), 70);
         $message = $this->composeMessage($body);
         if (!$message->send($this->mailer)) {
