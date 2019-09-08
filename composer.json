@@ -20,23 +20,22 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "yiisoft/log": "^3.0@dev"
+        "yiisoft/log": "^3.0@dev",
+        "yiisoft/mailer": "^3.0@dev"
     },
     "require-dev": {
         "yiisoft/di": "^3.0@dev",
-        "yiisoft/cache": "^3.0@dev",
-        "yiisoft/yii-web": "^3.0@dev",
-        "phpunit/phpunit": "^7.3",
-        "hiqdev/composer-config-plugin": "^1.0@dev"
+        "yiisoft/event-dispatcher": "^3.0@dev",
+        "phpunit/phpunit": "^7.3"
     },
     "autoload": {
         "psr-4": {
-            "Yiisoft\\Log\\": "src"
+            "Yiisoft\\Log\\Target\\Email\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Yiisoft\\Log\\Tests\\": "tests"
+            "Yiisoft\\Log\\Target\\Email\\Tests\\": "tests"
         }
     },
     "extra": {

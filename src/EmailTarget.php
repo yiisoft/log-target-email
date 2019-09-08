@@ -1,10 +1,10 @@
 <?php
-namespace Yiisoft\Log;
+namespace Yiisoft\Log\Target\Email;
 
-use yii\di\AbstractContainer;
-use yii\exceptions\InvalidConfigException;
-use yii\mail\MailerInterface;
-use yii\mail\MessageInterface;
+use Yiisoft\Log\LogRuntimeException;
+use Yiisoft\Log\Target;
+use Yiisoft\Mailer\MailerInterface;
+use Yiisoft\Mailer\MessageInterface;
 
 /**
  * EmailTarget sends selected log messages to the specified email addresses.
@@ -51,14 +51,14 @@ class EmailTarget extends Target
      *
      * @param MailerInterface $mailer
      * @param array $message
-     * @throws InvalidConfigException
+     * @throws \InvalidArgumentException
      */
     public function __construct(MailerInterface $mailer, array $message)
     {
         $this->mailer = $mailer;
         $this->message = $message;
         if (empty($this->message['to'])) {
-            throw new InvalidConfigException('The "to" option must be set for EmailTarget::message.');
+            throw new \InvalidArgumentException('The "to" option must be set for EmailTarget::message.');
         }
     }
 
@@ -90,6 +90,7 @@ class EmailTarget extends Target
     protected function composeMessage(string $body): MessageInterface
     {
         $message = $this->mailer->compose();
+
         AbstractContainer::configure($message, $this->message);
         $message->setTextBody($body);
 

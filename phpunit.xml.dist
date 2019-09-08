@@ -8,8 +8,7 @@
     convertErrorsToExceptions="true"
     convertNoticesToExceptions="true"
     convertWarningsToExceptions="true"
-    stopOnFailure="false"
-    printerClass="yii\tests\ResultPrinter">
+    stopOnFailure="false">
     <testsuites>
         <testsuite name="Yii Log - Email Target tests">
             <directory>./tests</directory>
@@ -18,7 +17,7 @@
 
     <filter>
         <whitelist>
-            <directory>./</directory>
+            <directory>./src</directory>
             <exclude>
                 <directory>./tests</directory>
                 <directory>./vendor</directory>
