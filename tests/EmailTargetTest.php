@@ -14,7 +14,7 @@ use Yiisoft\Mailer\BaseMessage;
 class EmailTargetTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|BaseMailer
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Yiisoft\Mailer\BaseMailer
      */
     protected $mailer;
 
@@ -24,8 +24,8 @@ class EmailTargetTest extends TestCase
     protected function setUp()
     {
         $this->mailer = $this->getMockBuilder(BaseMailer::class)
-            ->setConstructorArgs([$this->app])
             ->setMethods(['compose'])
+            ->disableOriginalConstructor()
             ->getMockForAbstractClass();
     }
 
@@ -60,14 +60,14 @@ class EmailTargetTest extends TestCase
         $textBody = wordwrap(implode("\n", [$message1[0], $message2[0]]), 70);
 
         $message = $this->getMockBuilder(BaseMessage::class)
-            ->setMethods(['setTextBody', 'send', 'setSubject'])
+            ->setMethods(['setTextBody', 'setMailer', 'send', 'setSubject'])
             ->getMockForAbstractClass();
         $message->method('send')->willReturn(true);
 
         $this->mailer->expects($this->once())->method('compose')->willReturn($message);
 
         $message->expects($this->once())->method('setTextBody')->with($this->equalTo($textBody));
-        $message->expects($this->once())->method('send')->with($this->equalTo($this->mailer));
+        $message->expects($this->once())->method('setMailer')->with($this->equalTo($this->mailer));
         $message->expects($this->once())->method('setSubject')->with($this->equalTo('Hello world'));
 
         $mailTarget = $this->getMockBuilder(EmailTarget::class)
@@ -103,14 +103,14 @@ class EmailTargetTest extends TestCase
         $textBody = wordwrap(implode("\n", [$message1[0], $message2[0]]), 70);
 
         $message = $this->getMockBuilder(BaseMessage::class)
-            ->setMethods(['setTextBody', 'send', 'setSubject'])
+            ->setMethods(['setTextBody', 'setMailer', 'send', 'setSubject'])
             ->getMockForAbstractClass();
         $message->method('send')->willReturn(true);
 
         $this->mailer->expects($this->once())->method('compose')->willReturn($message);
 
         $message->expects($this->once())->method('setTextBody')->with($this->equalTo($textBody));
-        $message->expects($this->once())->method('send')->with($this->equalTo($this->mailer));
+        $message->expects($this->once())->method('setMailer')->with($this->equalTo($this->mailer));
         $message->expects($this->once())->method('setSubject')->with($this->equalTo('Application Log'));
 
         $mailTarget = $this->getMockBuilder(EmailTarget::class)
@@ -143,7 +143,7 @@ class EmailTargetTest extends TestCase
         $message = $this->getMockBuilder(BaseMessage::class)
             ->setMethods(['send'])
             ->getMockForAbstractClass();
-        $message->method('send')->willReturn(false);
+        $message->method('send')->willThrowException(new LogRuntimeException());
         $this->mailer->expects($this->once())->method('compose')->willReturn($message);
         $mailTarget = $this->getMockBuilder(EmailTarget::class)
             ->setMethods(['formatMessage'])
