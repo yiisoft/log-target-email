@@ -41,15 +41,14 @@ class EmailTarget extends Target
      */
     protected $message = [];
     /**
-     * @var MailerInterface the mailer object.
+     * @var \Yiisoft\Mailer\MailerInterface the mailer object.
      */
-    protected $mailer = 'mailer';
-
+    protected $mailer;
 
     /**
      * EmailTarget constructor
      *
-     * @param MailerInterface $mailer
+     * @param \Yiisoft\Mailer\MailerInterface $mailer
      * @param array $message
      * @throws \InvalidArgumentException
      */
@@ -65,7 +64,7 @@ class EmailTarget extends Target
     /**
      * Sends log messages to specified email addresses.
      * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
-     * @throws LogRuntimeException
+     * @throws \Yiisoft\Log\LogRuntimeException
      */
     public function export(): void
     {
@@ -88,7 +87,7 @@ class EmailTarget extends Target
     /**
      * Composes a mail message with the given body content.
      * @param string $body the body content
-     * @return MessageInterface $message
+     * @return \Yiisoft\Mailer\MessageInterface $message
      */
     protected function composeMessage(string $body): MessageInterface
     {
