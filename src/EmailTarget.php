@@ -77,7 +77,10 @@ class EmailTarget extends Target
         $messages = array_map([$this, 'formatMessage'], $this->getMessages());
         $body = wordwrap(implode("\n", $messages), 70);
         $message = $this->composeMessage($body);
-        if (!$message->send($this->mailer)) {
+
+        try {
+            $message->setMailer($this->mailer)->send();
+        } catch (\Throwable $e) {
             throw new LogRuntimeException('Unable to export log through email!');
         }
     }
@@ -90,8 +93,8 @@ class EmailTarget extends Target
     protected function composeMessage(string $body): MessageInterface
     {
         $message = $this->mailer->compose();
-
-        AbstractContainer::configure($message, $this->message);
+        $message->setTo($this->message['to']);
+        $message->setSubject($this->message['subject']);
         $message->setTextBody($body);
 
         return $message;
