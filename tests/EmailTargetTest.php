@@ -21,7 +21,7 @@ class EmailTargetTest extends TestCase
     /**
      * Set up mailer.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mailer = $this->getMockBuilder(BaseMailer::class)
             ->setMethods(['compose'])
@@ -35,7 +35,7 @@ class EmailTargetTest extends TestCase
     public function testConstructWithOptionTo(): void
     {
         $target = new EmailTarget($this->mailer, ['to' => 'developer1@example.com']);
-        $this->assertInternalType('object', $target);
+        $this->assertIsObject($target);
     }
 
     /**
@@ -62,7 +62,6 @@ class EmailTargetTest extends TestCase
         $message = $this->getMockBuilder(BaseMessage::class)
             ->setMethods(['setTextBody', 'setMailer', 'send', 'setSubject'])
             ->getMockForAbstractClass();
-        $message->method('send')->willReturn(true);
 
         $this->mailer->expects($this->once())->method('compose')->willReturn($message);
 
@@ -105,7 +104,6 @@ class EmailTargetTest extends TestCase
         $message = $this->getMockBuilder(BaseMessage::class)
             ->setMethods(['setTextBody', 'setMailer', 'send', 'setSubject'])
             ->getMockForAbstractClass();
-        $message->method('send')->willReturn(true);
 
         $this->mailer->expects($this->once())->method('compose')->willReturn($message);
 
