@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\Log\Target\Email;
 
 use Yiisoft\Log\LogRuntimeException;

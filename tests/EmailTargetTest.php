@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\Log\Target\Email\Tests;
 
 use PHPUnit\Framework\TestCase;
