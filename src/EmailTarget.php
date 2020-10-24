@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yiisoft\Log\Target\Email;
 
 use Yiisoft\Log\LogRuntimeException;
@@ -40,11 +42,11 @@ class EmailTarget extends Target
      * @var array the configuration array for creating a [[MessageInterface|message]] object.
      * Note that the "to" option must be set, which specifies the destination email address(es).
      */
-    protected $message = [];
+    protected array $message = [];
     /**
      * @var \Yiisoft\Mailer\MailerInterface the mailer object.
      */
-    protected $mailer;
+    protected MailerInterface $mailer;
 
     /**
      * EmailTarget constructor

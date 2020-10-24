@@ -14,3 +14,18 @@ This library provides the Email target for the [yiisoft/log] library.
 [![Total Downloads](https://poser.pugx.org/yiisoft/log-target-email/downloads.png)](https://packagist.org/packages/yiisoft/log-target-email)
 [![Build Status](https://travis-ci.com/yiisoft/log-target-email.svg?branch=master)](https://travis-ci.com/yiisoft/log-target-email)
 
+## Unit testing
+
+The package is tested with [PHPUnit](https://phpunit.de/). To run tests:
+
+```php
+./vendor/bin/phpunit
+```
+
+## Static analysis
+
+The code is statically analyzed with [Psalm](https://psalm.dev/). To run static analysis:
+
+```php
+./vendor/bin/psalm
+```

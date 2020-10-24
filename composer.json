@@ -28,7 +28,7 @@
         "yiisoft/di": "^3.0@dev",
         "yiisoft/event-dispatcher": "^3.0@dev",
         "phpunit/phpunit": "^9.3",
-        "phan/phan": "^3.0"
+        "vimeo/psalm": "^4.0"
     },
     "autoload": {
         "psr-4": {
