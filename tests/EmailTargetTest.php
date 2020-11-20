@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yiisoft\Log\Target\Email\Tests;
 
 use PHPUnit\Framework\TestCase;
@@ -10,6 +12,7 @@ use Yiisoft\Mailer\BaseMessage;
 
 /**
  * Class EmailTargetTest.
+ *
  * @group log
  */
 class EmailTargetTest extends TestCase
