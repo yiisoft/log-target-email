@@ -27,7 +27,7 @@
     "require-dev": {
         "yiisoft/di": "^3.0@dev",
         "yiisoft/event-dispatcher": "^3.0@dev",
-        "phpunit/phpunit": "^9.3",
+        "phpunit/phpunit": "^9.4",
         "vimeo/psalm": "^4.2"
     },
     "autoload": {
