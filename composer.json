@@ -25,10 +25,11 @@
         "php": "^7.4|^8.0"
     },
     "require-dev": {
-        "yiisoft/di": "^3.0@dev",
-        "yiisoft/event-dispatcher": "^3.0@dev",
         "phpunit/phpunit": "^9.4",
-        "vimeo/psalm": "^4.2"
+        "roave/infection-static-analysis-plugin": "^1.4",
+        "vimeo/psalm": "^4.2",
+        "yiisoft/di": "^3.0@dev",
+        "yiisoft/event-dispatcher": "^3.0@dev"
     },
     "autoload": {
         "psr-4": {
