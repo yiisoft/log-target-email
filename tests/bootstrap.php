@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /** @noinspection PhpIncludeInspection */
 
 // ensure we get report on all possible php errors

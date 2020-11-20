@@ -53,6 +53,7 @@ class EmailTarget extends Target
      *
      * @param \Yiisoft\Mailer\MailerInterface $mailer
      * @param array $message
+     *
      * @throws \InvalidArgumentException
      */
     public function __construct(MailerInterface $mailer, array $message)
@@ -67,6 +68,7 @@ class EmailTarget extends Target
     /**
      * Sends log messages to specified email addresses.
      * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
+     *
      * @throws \Yiisoft\Log\LogRuntimeException
      */
     public function export(): void
@@ -89,7 +91,9 @@ class EmailTarget extends Target
 
     /**
      * Composes a mail message with the given body content.
+     *
      * @param string $body the body content
+     *
      * @return \Yiisoft\Mailer\MessageInterface $message
      */
     protected function composeMessage(string $body): MessageInterface
