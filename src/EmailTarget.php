@@ -60,6 +60,8 @@ class EmailTarget extends Target
     {
         $this->mailer = $mailer;
         $this->message = $message;
+        parent::__construct();
+
         if (empty($this->message['to'])) {
             throw new \InvalidArgumentException('The "to" option must be set for EmailTarget::message.');
         }
