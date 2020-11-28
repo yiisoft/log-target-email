@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yiisoft\Log\Target\Email\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LogLevel;
 use Yiisoft\Log\LogRuntimeException;
 use Yiisoft\Log\Target\Email\EmailTarget;
 use Yiisoft\Mailer\BaseMailer;
