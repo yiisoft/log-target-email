@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Yiisoft\Log\Target\Email\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Yiisoft\Log\LogRuntimeException;
+use RuntimeException;
 use Yiisoft\Log\Target\Email\EmailTarget;
 use Yiisoft\Mailer\BaseMailer;
 use Yiisoft\Mailer\BaseMessage;
@@ -148,7 +148,7 @@ class EmailTargetTest extends TestCase
         $message = $this->getMockBuilder(BaseMessage::class)
             ->setMethods(['send'])
             ->getMockForAbstractClass();
-        $message->method('send')->willThrowException(new LogRuntimeException());
+        $message->method('send')->willThrowException(new RuntimeException());
         $this->mailer->expects($this->once())->method('compose')->willReturn($message);
         $mailTarget = $this->getMockBuilder(EmailTarget::class)
             ->setMethods(['formatMessages'])
@@ -159,7 +159,7 @@ class EmailTargetTest extends TestCase
                 ],
             ])
             ->getMock();
-        $this->expectException(LogRuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $mailTarget->export();
     }
 }
