@@ -132,7 +132,7 @@ class EmailTargetTest extends TestCase
             ->method('formatMessages')
             ->willReturn(
                 "A veeeeery loooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 3\n"
-                . "Message 4"
+                . 'Message 4'
             )
         ;
         $mailTarget->collect($messages, true);
