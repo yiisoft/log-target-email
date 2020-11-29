@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Yiisoft\Log\Target\Email;
 
-use Yiisoft\Log\LogRuntimeException;
+use InvalidArgumentException;
+use RuntimeException;
 use Yiisoft\Log\Target;
 use Yiisoft\Mailer\MailerInterface;
 use Yiisoft\Mailer\MessageInterface;
@@ -54,7 +55,7 @@ class EmailTarget extends Target
      * @param \Yiisoft\Mailer\MailerInterface $mailer
      * @param array $message
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(MailerInterface $mailer, array $message)
     {
@@ -63,15 +64,15 @@ class EmailTarget extends Target
         parent::__construct();
 
         if (empty($this->message['to'])) {
-            throw new \InvalidArgumentException('The "to" option must be set for EmailTarget::message.');
+            throw new InvalidArgumentException('The "to" option must be set for EmailTarget::message.');
         }
     }
 
     /**
      * Sends log messages to specified email addresses.
-     * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
+     * Starting from version 2.0.14, this method throws RuntimeException in case the log can not be exported.
      *
-     * @throws \Yiisoft\Log\LogRuntimeException
+     * @throws RuntimeException
      */
     public function export(): void
     {
@@ -80,14 +81,14 @@ class EmailTarget extends Target
         if (empty($this->message['subject'])) {
             $this->message['subject'] = 'Application Log';
         }
-        $messages = array_map([$this, 'formatMessage'], $this->getMessages());
-        $body = wordwrap(implode("\n", $messages), 70);
+
+        $body = wordwrap($this->formatMessages("\n"), 70);
         $message = $this->composeMessage($body);
 
         try {
             $message->setMailer($this->mailer)->send();
         } catch (\Throwable $e) {
-            throw new LogRuntimeException('Unable to export log through email!');
+            throw new RuntimeException('Unable to export log through email!');
         }
     }
 
