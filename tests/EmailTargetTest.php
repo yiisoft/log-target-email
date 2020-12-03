@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Yiisoft\Log\Target\Email\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LogLevel;
 use RuntimeException;
+use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Email\EmailTarget;
 use Yiisoft\Mailer\BaseMailer;
 use Yiisoft\Mailer\BaseMessage;
@@ -58,10 +60,16 @@ class EmailTargetTest extends TestCase
      */
     public function testExportWithSubject()
     {
-        $message1 = ['info', 'A very looooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 1', []];
-        $message2 = ['info', 'A very looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 2', []];
+        $message1 = new Message(
+            LogLevel::INFO,
+            'A very looooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 1'
+        );
+        $message2 = new Message(
+            LogLevel::INFO,
+            'A very looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 2'
+        );
         $messages = [$message1, $message2];
-        $textBody = wordwrap(implode("\n", [$message1[1], $message2[1]]), 70);
+        $textBody = wordwrap(implode("\n", [$message1->message(), $message2->message()]), 70);
 
         $message = $this->getMockBuilder(BaseMessage::class)
             ->setMethods(['setTextBody', 'setMailer', 'send', 'setSubject'])
@@ -101,11 +109,16 @@ class EmailTargetTest extends TestCase
      */
     public function testExportWithoutSubject(): void
     {
-        $message1 = ['info', 'A veeeeery loooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 3', []];
-        $message2 = ['info', 'Message 4', []];
-
+        $message1 = new Message(
+            LogLevel::INFO,
+            'A veeeeery loooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 3',
+        );
+        $message2 = new Message(
+            LogLevel::INFO,
+            'Message 4'
+        );
         $messages = [$message1, $message2];
-        $textBody = wordwrap(implode("\n", [$message1[1], $message2[1]]), 70);
+        $textBody = wordwrap(implode("\n", [$message1->message(), $message2->message()]), 70);
 
         $message = $this->getMockBuilder(BaseMessage::class)
             ->setMethods(['setTextBody', 'setMailer', 'send', 'setSubject'])
