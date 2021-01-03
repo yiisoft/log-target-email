@@ -44,6 +44,8 @@ final class EmailTarget extends Target
      * @param string $subjectEmail The email message subject.
      *
      * @throws InvalidArgumentException If the "to" email message argument is invalid.
+     *
+     * @psalm-suppress DocblockTypeContradiction
      */
     public function __construct(MailerInterface $mailer, $emailTo, string $subjectEmail = '')
     {
