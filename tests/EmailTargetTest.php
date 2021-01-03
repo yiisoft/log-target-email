@@ -11,6 +11,7 @@ use Psr\Log\LogLevel;
 use ReflectionException;
 use ReflectionObject;
 use RuntimeException;
+use stdClass;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Email\EmailTarget;
 use Yiisoft\Mailer\BaseMailer;
@@ -53,19 +54,9 @@ final class EmailTargetTest extends TestCase
         $this->mailer->method('compose')->willReturn($this->message);
     }
 
-    public function testConstructThrownExceptionForWithoutOptionTo(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The "to" option must be set for Yiisoft\Log\Target\Email\EmailTarget::message.');
-        new EmailTarget($this->mailer, []);
-    }
-
     public function testExportWithSubject(): void
     {
-        $target = $this->createEmailTarget([
-            'to' => 'developer@example.com',
-            'subject' => 'Hello world',
-        ]);
+        $target = $this->createEmailTarget('developer@example.com', 'Hello world');
 
         $target->collect([
             new Message(
@@ -90,9 +81,7 @@ final class EmailTargetTest extends TestCase
 
     public function testExportWithoutSubject(): void
     {
-        $target = $this->createEmailTarget([
-            'to' => 'developer@example.com',
-        ]);
+        $target = $this->createEmailTarget(['developer1@example.com', 'developer2@example.com']);
 
         $target->collect([
             new Message(
@@ -117,9 +106,7 @@ final class EmailTargetTest extends TestCase
 
     public function testExportWithSendFailure(): void
     {
-        $target = $this->createEmailTarget([
-            'to' => 'developer@example.com',
-        ]);
+        $target = $this->createEmailTarget(['developer@example.com']);
 
         $this->message->method('send')->willThrowException(new RuntimeException());
 
@@ -127,9 +114,38 @@ final class EmailTargetTest extends TestCase
         $target->collect([new Message(LogLevel::INFO, 'Message')], true);
     }
 
-    private function createEmailTarget(array $messageOptions): EmailTarget
+    public function invalidEmailToDataProvider(): array
     {
-        $target = new EmailTarget($this->mailer, $messageOptions);
+        return [
+            'int' => [1],
+            'float' => [1.1],
+            'null' => [null],
+            'object' => [new stdClass()],
+            'callable' => [fn () => 'admin@example.com'],
+            'empty-array' => [[]],
+            'empty-string' => [''],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidEmailToDataProvider
+     *
+     * @param mixed $emailTo
+     */
+    public function testConstructThrownExceptionForInvalidEmailTo($emailTo): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        new EmailTarget($this->mailer, []);
+    }
+
+    /**
+     * @param mixed $emailTo
+     * @param string $subjectEmail
+     * @return EmailTarget
+     */
+    private function createEmailTarget($emailTo, string $subjectEmail = ''): EmailTarget
+    {
+        $target = new EmailTarget($this->mailer, $emailTo, $subjectEmail);
         $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
         return $target;
     }

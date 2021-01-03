@@ -9,16 +9,11 @@ use RuntimeException;
 use Throwable;
 use Yiisoft\Log\Target;
 use Yiisoft\Mailer\MailerInterface;
-use Yiisoft\Mailer\MessageInterface;
 
-use function sprintf;
 use function wordwrap;
 
 /**
  * EmailTarget sends selected log messages to the specified email addresses.
- *
- * You may configure the email to be sent by setting the {@see EmailTarget::$messageOptions} property,
- * through which you can set the target email addresses, subject, etc.
  *
  * {@see EmailTarget::$mailer} is instance of {@see MailerInterface} that sends email and should be already configured.
  */
@@ -30,34 +25,36 @@ final class EmailTarget extends Target
     private MailerInterface $mailer;
 
     /**
-     * @var array The configuration array for creating a {@see MessageInterface} instance.
-     * Note that the "to" option must be set, which specifies the destination email address(es).
+     * @var string|array The receiver email address.
+     * You may pass an array of addresses if multiple recipients should receive this message.
+     * You may also specify receiver name in addition to email address using format: `[email => name]`.
      */
-    private array $messageOptions;
+    private $emailTo;
+
+    /**
+     * @var string The email message subject.
+     */
+    private string $subjectEmail;
 
     /**
      * @param MailerInterface $mailer The mailer instance.
-     * @param array $messageOptions The configuration array for creating a {@see MessageInterface} instance.
-     * Note that the "to" option must be set, which specifies the destination email address(es).
+     * @param string|array $emailTo The receiver email address.
+     * You may pass an array of addresses if multiple recipients should receive this message.
+     * You may also specify receiver name in addition to email address using format: `[email => name]`.
+     * @param string $subjectEmail The email message subject.
      *
-     * @throws InvalidArgumentException If the "to" message option was not set.
+     * @throws InvalidArgumentException If the "to" email message argument is invalid.
      */
-    public function __construct(MailerInterface $mailer, array $messageOptions)
+    public function __construct(MailerInterface $mailer, $emailTo, string $subjectEmail = '')
     {
+        if (empty($emailTo) || (!is_string($emailTo) && !is_array($emailTo))) {
+            throw new InvalidArgumentException('The "to" argument must be an array or string and must not be empty.');
+        }
+
         $this->mailer = $mailer;
-        $this->messageOptions = $messageOptions;
+        $this->emailTo = $emailTo;
+        $this->subjectEmail = $subjectEmail ?: 'Application Log';
         parent::__construct();
-
-        if (empty($this->messageOptions['to'])) {
-            throw new InvalidArgumentException(sprintf(
-                'The "to" option must be set for %s::message.',
-                self::class,
-            ));
-        }
-
-        if (empty($this->messageOptions['subject'])) {
-            $this->messageOptions['subject'] = 'Application Log';
-        }
     }
 
     /**
@@ -67,10 +64,9 @@ final class EmailTarget extends Target
      */
     protected function export(): void
     {
-
         $message = $this->mailer->compose()
-            ->setTo($this->messageOptions['to'])
-            ->setSubject($this->messageOptions['subject'])
+            ->setTo($this->emailTo)
+            ->setSubject($this->subjectEmail)
             ->setTextBody(wordwrap($this->formatMessages("\n"), 70))
         ;
 
