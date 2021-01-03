@@ -6,106 +6,78 @@ namespace Yiisoft\Log\Target\Email;
 
 use InvalidArgumentException;
 use RuntimeException;
+use Throwable;
 use Yiisoft\Log\Target;
 use Yiisoft\Mailer\MailerInterface;
 use Yiisoft\Mailer\MessageInterface;
 
+use function sprintf;
+use function wordwrap;
+
 /**
  * EmailTarget sends selected log messages to the specified email addresses.
  *
- * You may configure the email to be sent by setting the [[message]] property, through which
- * you can set the target email addresses, subject, etc.:
+ * You may configure the email to be sent by setting the {@see EmailTarget::$messageOptions} property,
+ * through which you can set the target email addresses, subject, etc.
  *
- * ```php
- * 'components' => [
- *     'log' => [
- *          'targets' => [
- *              [
- *                  '__class' => \Yiisoft\Log\EmailTarget::class,
- *                  'mailer' => 'mailer',
- *                  'levels' => ['error', 'warning'],
- *                  'message' => [
- *                      'from' => ['log@example.com'],
- *                      'to' => ['developer1@example.com', 'developer2@example.com'],
- *                      'subject' => 'Log message',
- *                  ],
- *              ],
- *          ],
- *     ],
- * ],
- * ```
- *
- * In the above `mailer` is ID of the component that sends email and should be already configured.
+ * {@see EmailTarget::$mailer} is instance of {@see MailerInterface} that sends email and should be already configured.
  */
-class EmailTarget extends Target
+final class EmailTarget extends Target
 {
     /**
-     * @var array the configuration array for creating a [[MessageInterface|message]] object.
+     * @var MailerInterface The mailer instance.
+     */
+    private MailerInterface $mailer;
+
+    /**
+     * @var array The configuration array for creating a {@see MessageInterface} instance.
      * Note that the "to" option must be set, which specifies the destination email address(es).
      */
-    protected array $message = [];
-    /**
-     * @var \Yiisoft\Mailer\MailerInterface the mailer object.
-     */
-    protected MailerInterface $mailer;
+    private array $messageOptions;
 
     /**
-     * EmailTarget constructor
+     * @param MailerInterface $mailer The mailer instance.
+     * @param array $messageOptions The configuration array for creating a {@see MessageInterface} instance.
+     * Note that the "to" option must be set, which specifies the destination email address(es).
      *
-     * @param \Yiisoft\Mailer\MailerInterface $mailer
-     * @param array $message
-     *
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException If the "to" message option was not set.
      */
-    public function __construct(MailerInterface $mailer, array $message)
+    public function __construct(MailerInterface $mailer, array $messageOptions)
     {
         $this->mailer = $mailer;
-        $this->message = $message;
+        $this->messageOptions = $messageOptions;
         parent::__construct();
 
-        if (empty($this->message['to'])) {
-            throw new InvalidArgumentException('The "to" option must be set for EmailTarget::message.');
+        if (empty($this->messageOptions['to'])) {
+            throw new InvalidArgumentException(sprintf(
+                'The "to" option must be set for %s::message.',
+                self::class,
+            ));
+        }
+
+        if (empty($this->messageOptions['subject'])) {
+            $this->messageOptions['subject'] = 'Application Log';
         }
     }
 
     /**
      * Sends log messages to specified email addresses.
-     * Starting from version 2.0.14, this method throws RuntimeException in case the log can not be exported.
      *
-     * @throws RuntimeException
+     * @throws RuntimeException If the log cannot be exported.
      */
-    public function export(): void
+    protected function export(): void
     {
-        // moved initialization of subject here because of the following issue
-        // https://github.com/yiisoft/yii2/issues/1446
-        if (empty($this->message['subject'])) {
-            $this->message['subject'] = 'Application Log';
-        }
 
-        $body = wordwrap($this->formatMessages("\n"), 70);
-        $message = $this->composeMessage($body);
+        $message = $this->mailer->compose()
+            ->setTo($this->messageOptions['to'])
+            ->setSubject($this->messageOptions['subject'])
+            ->setTextBody(wordwrap($this->formatMessages("\n"), 70))
+        ;
 
         try {
             $message->setMailer($this->mailer)->send();
-        } catch (\Throwable $e) {
-            throw new RuntimeException('Unable to export log through email!');
+        } catch (Throwable $e) {
+            throw new RuntimeException('Unable to export log through email.', 0, $e);
         }
-    }
-
-    /**
-     * Composes a mail message with the given body content.
-     *
-     * @param string $body the body content
-     *
-     * @return \Yiisoft\Mailer\MessageInterface $message
-     */
-    protected function composeMessage(string $body): MessageInterface
-    {
-        $message = $this->mailer->compose();
-        $message->setTo($this->message['to']);
-        $message->setSubject($this->message['subject']);
-        $message->setTextBody($body);
-
-        return $message;
     }
 }
