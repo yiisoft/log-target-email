@@ -10,6 +10,8 @@ use Throwable;
 use Yiisoft\Log\Target;
 use Yiisoft\Mailer\MailerInterface;
 
+use function is_array;
+use function is_string;
 use function wordwrap;
 
 /**
