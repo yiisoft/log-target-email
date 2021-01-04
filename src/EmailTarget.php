@@ -27,7 +27,7 @@ final class EmailTarget extends Target
     private MailerInterface $mailer;
 
     /**
-     * @var string|array The receiver email address.
+     * @var array|string The receiver email address.
      * You may pass an array of addresses if multiple recipients should receive this message.
      * You may also specify receiver name in addition to email address using format: `[email => name]`.
      */
@@ -40,7 +40,7 @@ final class EmailTarget extends Target
 
     /**
      * @param MailerInterface $mailer The mailer instance.
-     * @param string|array $emailTo The receiver email address.
+     * @param array|string $emailTo The receiver email address.
      * You may pass an array of addresses if multiple recipients should receive this message.
      * You may also specify receiver name in addition to email address using format: `[email => name]`.
      * @param string $subjectEmail The email message subject.

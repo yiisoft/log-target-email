@@ -22,12 +22,12 @@ use function wordwrap;
 final class EmailTargetTest extends TestCase
 {
     /**
-     * @var MockObject|BaseMailer
+     * @var BaseMailer|MockObject
      */
     private $mailer;
 
     /**
-     * @var MockObject|BaseMessage
+     * @var BaseMessage|MockObject
      */
     private $message;
 
@@ -141,6 +141,7 @@ final class EmailTargetTest extends TestCase
     /**
      * @param mixed $emailTo
      * @param string $subjectEmail
+     *
      * @return EmailTarget
      */
     private function createEmailTarget($emailTo, string $subjectEmail = ''): EmailTarget
@@ -155,9 +156,9 @@ final class EmailTargetTest extends TestCase
      *
      * @param EmailTarget $target
      *
-     * @return string
-     *
      * @throws ReflectionException
+     *
+     * @return string
      */
     private function invokeFormatMessagesMethod(EmailTarget $target): string
     {
