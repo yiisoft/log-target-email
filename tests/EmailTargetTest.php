@@ -135,7 +135,7 @@ final class EmailTargetTest extends TestCase
     public function testConstructThrownExceptionForInvalidEmailTo($emailTo): void
     {
         $this->expectException(InvalidArgumentException::class);
-        new EmailTarget($this->mailer, []);
+        new EmailTarget($this->mailer, $emailTo);
     }
 
     /**
