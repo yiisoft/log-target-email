@@ -4,175 +4,169 @@ declare(strict_types=1);
 
 namespace Yiisoft\Log\Target\Email\Tests;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LogLevel;
+use ReflectionException;
+use ReflectionObject;
 use RuntimeException;
+use stdClass;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Email\EmailTarget;
 use Yiisoft\Mailer\BaseMailer;
 use Yiisoft\Mailer\BaseMessage;
 
-/**
- * Class EmailTargetTest.
- *
- * @group log
- */
-class EmailTargetTest extends TestCase
+use function wordwrap;
+
+final class EmailTargetTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|\Yiisoft\Mailer\BaseMailer
+     * @var BaseMailer|MockObject
      */
-    protected $mailer;
+    private $mailer;
+
+    /**
+     * @var BaseMessage|MockObject
+     */
+    private $message;
 
     /**
      * Set up mailer.
      */
     protected function setUp(): void
     {
-        $this->mailer = $this->getMockBuilder(BaseMailer::class)
-            ->setMethods(['compose'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-    }
-
-    /**
-     * @covers \Yiisoft\Log\Target\Email\EmailTarget::__construct()
-     */
-    public function testConstructWithOptionTo(): void
-    {
-        $target = new EmailTarget($this->mailer, ['to' => 'developer1@example.com']);
-        $this->assertIsObject($target);
-    }
-
-    /**
-     * @covers \Yiisoft\Log\Target\Email\EmailTarget::__construct()
-     */
-    public function testConstructWithoutOptionTo(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The "to" option must be set for EmailTarget::message.');
-        new EmailTarget($this->mailer, []);
-    }
-
-    /**
-     * @covers \Yiisoft\Log\Target\Email\EmailTarget::export()
-     * @covers \Yiisoft\Log\Target\Email\EmailTarget::composeMessage()
-     */
-    public function testExportWithSubject()
-    {
-        $message1 = new Message(
-            LogLevel::INFO,
-            'A very looooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 1'
-        );
-        $message2 = new Message(
-            LogLevel::INFO,
-            'A very looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 2'
-        );
-        $messages = [$message1, $message2];
-        $textBody = wordwrap(implode("\n", [$message1->message(), $message2->message()]), 70);
-
-        $message = $this->getMockBuilder(BaseMessage::class)
-            ->setMethods(['setTextBody', 'setMailer', 'send', 'setSubject'])
-            ->getMockForAbstractClass();
-
-        $this->mailer->expects($this->once())->method('compose')->willReturn($message);
-
-        $message->expects($this->once())->method('setTextBody')->with($this->equalTo($textBody));
-        $message->expects($this->once())->method('setMailer')->with($this->equalTo($this->mailer));
-        $message->expects($this->once())->method('setSubject')->with($this->equalTo('Hello world'));
-
-        $mailTarget = $this->getMockBuilder(EmailTarget::class)
-            ->setMethods(['formatMessages'])
-            ->setConstructorArgs([
-                'mailer' => $this->mailer,
-                'message' => [
-                    'to' => 'developer@example.com',
-                    'subject' => 'Hello world',
-                ],
-            ])
-            ->getMock();
-
-        $mailTarget
-            ->expects($this->once())
-            ->method('formatMessages')
-            ->willReturn(
-                "A very looooooooooooooooooooooooooooooooooooooooooooooooooooooooooong\nmessage 1\n"
-                . "A very\nlooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong\nmessage 2"
-            )
+        $this->message = $this->getMockBuilder(BaseMessage::class)
+            ->onlyMethods(['setTextBody', 'setMailer', 'send', 'setSubject', 'setTo'])
+            ->getMockForAbstractClass()
         ;
-        $mailTarget->collect($messages, true);
+
+        $this->mailer = $this->getMockBuilder(BaseMailer::class)
+            ->onlyMethods(['compose'])
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass()
+        ;
+
+        $this->message->method('setTextBody')->willReturnSelf();
+        $this->message->method('setMailer')->willReturnSelf();
+        $this->message->method('setSubject')->willReturnSelf();
+        $this->message->method('setTo')->willReturnSelf();
+        $this->mailer->method('compose')->willReturn($this->message);
     }
 
-    /**
-     * @covers \Yiisoft\Log\Target\Email\EmailTarget::export()
-     * @covers \Yiisoft\Log\Target\Email\EmailTarget::composeMessage()
-     */
+    public function testExportWithSubject(): void
+    {
+        $target = $this->createEmailTarget('developer@example.com', 'Hello world');
+
+        $target->collect([
+            new Message(
+                LogLevel::INFO,
+                'A very looooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 1'
+            ),
+            new Message(
+                LogLevel::INFO,
+                'A very looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 2'
+            ),
+        ], false);
+
+        $textBody = $this->invokeFormatMessagesMethod($target);
+
+        $this->message->expects($this->once())->method('setTextBody')->with($this->equalTo($textBody));
+        $this->message->expects($this->once())->method('setMailer')->with($this->equalTo($this->mailer));
+        $this->message->expects($this->once())->method('setSubject')->with($this->equalTo('Hello world'));
+        $this->mailer->expects($this->once())->method('compose')->with($this->equalTo(null), $this->equalTo([]));
+
+        $target->collect([], true);
+    }
+
     public function testExportWithoutSubject(): void
     {
-        $message1 = new Message(
-            LogLevel::INFO,
-            'A veeeeery loooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 3',
-        );
-        $message2 = new Message(
-            LogLevel::INFO,
-            'Message 4'
-        );
-        $messages = [$message1, $message2];
-        $textBody = wordwrap(implode("\n", [$message1->message(), $message2->message()]), 70);
+        $target = $this->createEmailTarget(['developer1@example.com', 'developer2@example.com']);
 
-        $message = $this->getMockBuilder(BaseMessage::class)
-            ->setMethods(['setTextBody', 'setMailer', 'send', 'setSubject'])
-            ->getMockForAbstractClass();
+        $target->collect([
+            new Message(
+                LogLevel::INFO,
+                'A veeeeery loooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 3',
+            ),
+            new Message(
+                LogLevel::INFO,
+                'Message 4'
+            ),
+        ], false);
 
-        $this->mailer->expects($this->once())->method('compose')->willReturn($message);
+        $textBody = $this->invokeFormatMessagesMethod($target);
 
-        $message->expects($this->once())->method('setTextBody')->with($this->equalTo($textBody));
-        $message->expects($this->once())->method('setMailer')->with($this->equalTo($this->mailer));
-        $message->expects($this->once())->method('setSubject')->with($this->equalTo('Application Log'));
+        $this->message->expects($this->once())->method('setTextBody')->with($this->equalTo($textBody));
+        $this->message->expects($this->once())->method('setMailer')->with($this->equalTo($this->mailer));
+        $this->message->expects($this->once())->method('setSubject')->with($this->equalTo('Application Log'));
+        $this->mailer->expects($this->once())->method('compose')->with($this->equalTo(null), $this->equalTo([]));
 
-        $mailTarget = $this->getMockBuilder(EmailTarget::class)
-            ->setMethods(['formatMessages'])
-            ->setConstructorArgs([
-                'mailer' => $this->mailer,
-                'message' => [
-                    'to' => 'developer@example.com',
-                ],
-            ])
-            ->getMock();
+        $target->collect([], true);
+    }
 
-        $mailTarget
-            ->expects($this->once())
-            ->method('formatMessages')
-            ->willReturn(
-                "A veeeeery loooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 3\n"
-                . 'Message 4'
-            )
-        ;
-        $mailTarget->collect($messages, true);
+    public function testExportWithSendFailure(): void
+    {
+        $target = $this->createEmailTarget(['developer@example.com']);
+
+        $this->message->method('send')->willThrowException(new RuntimeException());
+
+        $this->expectException(RuntimeException::class);
+        $target->collect([new Message(LogLevel::INFO, 'Message')], true);
+    }
+
+    public function invalidEmailToDataProvider(): array
+    {
+        return [
+            'int' => [1],
+            'float' => [1.1],
+            'null' => [null],
+            'object' => [new stdClass()],
+            'callable' => [fn () => 'admin@example.com'],
+            'empty-array' => [[]],
+            'empty-string' => [''],
+        ];
     }
 
     /**
-     * @covers \Yiisoft\Log\Target\Email\EmailTarget::export()
+     * @dataProvider invalidEmailToDataProvider
      *
-     * See https://github.com/yiisoft/yii2/issues/14296
+     * @param mixed $emailTo
      */
-    public function testExportWithSendFailure(): void
+    public function testConstructThrownExceptionForInvalidEmailTo($emailTo): void
     {
-        $message = $this->getMockBuilder(BaseMessage::class)
-            ->setMethods(['send'])
-            ->getMockForAbstractClass();
-        $message->method('send')->willThrowException(new RuntimeException());
-        $this->mailer->expects($this->once())->method('compose')->willReturn($message);
-        $mailTarget = $this->getMockBuilder(EmailTarget::class)
-            ->setMethods(['formatMessages'])
-            ->setConstructorArgs([
-                'mailer' => $this->mailer,
-                'message' => [
-                    'to' => 'developer@example.com',
-                ],
-            ])
-            ->getMock();
-        $this->expectException(RuntimeException::class);
-        $mailTarget->export();
+        $this->expectException(InvalidArgumentException::class);
+        new EmailTarget($this->mailer, $emailTo);
+    }
+
+    /**
+     * @param mixed $emailTo
+     * @param string $subjectEmail
+     *
+     * @return EmailTarget
+     */
+    private function createEmailTarget($emailTo, string $subjectEmail = ''): EmailTarget
+    {
+        $target = new EmailTarget($this->mailer, $emailTo, $subjectEmail);
+        $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
+        return $target;
+    }
+
+    /**
+     * Invokes the `EmailTarget::formatMessages()` protected method.
+     *
+     * @param EmailTarget $target
+     *
+     * @throws ReflectionException
+     *
+     * @return string
+     */
+    private function invokeFormatMessagesMethod(EmailTarget $target): string
+    {
+        $reflection = new ReflectionObject($target);
+        $method = $reflection->getMethod('formatMessages');
+        $method->setAccessible(true);
+        $result = wordwrap($method->invokeArgs($target, ["\n"]), 70);
+        $method->setAccessible(false);
+        return $result;
     }
 }

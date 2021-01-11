@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="./tests/bootstrap.php"
-    backupGlobals="true"
-    colors="true"
-    verbose="true"
-    failOnRisky="true"
-    failOnWarning="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    stopOnFailure="false">
+
+<phpunit bootstrap="vendor/autoload.php"
+         colors="true"
+         verbose="true"
+         failOnRisky="true"
+         failOnWarning="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         stopOnFailure="false"
+         executionOrder="default"
+         resolveDependencies="true"
+>
+    <php>
+        <ini name="error_reporting" value="-1"/>
+    </php>
+
     <testsuites>
         <testsuite name="Yii Log - Email Target tests">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
 
-    <filter>
-        <whitelist>
+    <coverage>
+        <include>
             <directory>./src</directory>
-            <exclude>
-                <directory>./tests</directory>
-                <directory>./vendor</directory>
-            </exclude>
-        </whitelist>
-    </filter>
+        </include>
+    </coverage>
 </phpunit>

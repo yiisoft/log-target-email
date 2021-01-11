@@ -6,10 +6,6 @@
     <br>
 </p>
 
-This library provides the Email target for the [yiisoft/log] library.
-
-[yiisoft/log]: https://github.com/yiisoft/log
-
 [![Latest Stable Version](https://poser.pugx.org/yiisoft/log-target-email/v/stable.png)](https://packagist.org/packages/yiisoft/log-target-email)
 [![Total Downloads](https://poser.pugx.org/yiisoft/log-target-email/downloads.png)](https://packagist.org/packages/yiisoft/log-target-email)
 [![Build status](https://github.com/yiisoft/log-target-email/workflows/build/badge.svg)](https://github.com/yiisoft/log-target-email/actions?query=workflow%3Abuild)
@@ -18,6 +14,45 @@ This library provides the Email target for the [yiisoft/log] library.
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fyiisoft%2Flog-target-email%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/yiisoft/log-target-email/master)
 [![static analysis](https://github.com/yiisoft/log-target-email/workflows/static%20analysis/badge.svg)](https://github.com/yiisoft/log-target-email/actions?query=workflow%3A%22static+analysis%22)
 [![type-coverage](https://shepherd.dev/github/yiisoft/log-target-email/coverage.svg)](https://shepherd.dev/github/yiisoft/log-target-email)
+
+This package provides the Email target for the [yiisoft/log](https://github.com/yiisoft/log) library.
+
+## Installation
+
+The package could be installed with composer:
+
+```
+composer install yiisoft/log-target-email
+```
+
+## General usage
+
+Creating a target:
+
+```php
+$emailTarget = new \Yiisoft\Log\Target\Email\EmailTarget($mailer, $emailTo, $subjectEmail);
+```
+
+- `$mailer (\Yiisoft\Mailer\MailerInterface)` - The mailer instance that sends email and should be already configured.
+- `$emailTo (strig|array)` - The receiver email address.
+  You may pass an array of addresses if multiple recipients should receive this message.
+  You may also specify receiver name in addition to email address using format: `[email => name]`.
+- `$subjectEmail (string)` - The email message subject. Defaults to `Application Log`.
+
+Creating a logger:
+
+```php
+$logger = new \Yiisoft\Log\Logger([$emailTarget]);
+```
+
+For a description of using the logger, see the [yiisoft/log](https://github.com/yiisoft/log) package.
+
+For use in the [Yii framework](http://www.yiiframework.com/), see the configuration files:
+
+- [`config/common.php`](https://github.com/yiisoft/log-target-email/blob/master/config/common.php)
+- [`config/params.php`](https://github.com/yiisoft/log-target-email/blob/master/config/params.php)
+
+See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
 
 ### Unit testing
 
