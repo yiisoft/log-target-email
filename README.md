@@ -22,7 +22,7 @@ This package provides the Email target for the [yiisoft/log](https://github.com/
 The package could be installed with composer:
 
 ```
-composer install yiisoft/log-target-email
+composer require yiisoft/log-target-email
 ```
 
 ## General usage
