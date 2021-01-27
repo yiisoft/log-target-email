@@ -69,13 +69,13 @@ final class EmailTarget extends Target
     protected function export(): void
     {
         $message = $this->mailer->compose()
-            ->setTo($this->emailTo)
-            ->setSubject($this->subjectEmail)
-            ->setTextBody(wordwrap($this->formatMessages("\n"), 70))
+            ->withTo($this->emailTo)
+            ->withSubject($this->subjectEmail)
+            ->withTextBody(wordwrap($this->formatMessages("\n"), 70))
         ;
 
         try {
-            $message->setMailer($this->mailer)->send();
+            $this->mailer->send($message);
         } catch (Throwable $e) {
             throw new RuntimeException('Unable to export log through email.', 0, $e);
         }
