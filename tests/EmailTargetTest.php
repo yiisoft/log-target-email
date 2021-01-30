@@ -14,20 +14,20 @@ use RuntimeException;
 use stdClass;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Email\EmailTarget;
-use Yiisoft\Mailer\BaseMailer;
-use Yiisoft\Mailer\BaseMessage;
+use Yiisoft\Mailer\Mailer;
+use Yiisoft\Mailer\MessageInterface;
 
 use function wordwrap;
 
 final class EmailTargetTest extends TestCase
 {
     /**
-     * @var BaseMailer|MockObject
+     * @var Mailer|MockObject
      */
     private $mailer;
 
     /**
-     * @var BaseMessage|MockObject
+     * @var MessageInterface|MockObject
      */
     private $message;
 
@@ -36,21 +36,20 @@ final class EmailTargetTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->message = $this->getMockBuilder(BaseMessage::class)
-            ->onlyMethods(['setTextBody', 'setMailer', 'send', 'setSubject', 'setTo'])
+        $this->message = $this->getMockBuilder(MessageInterface::class)
+            ->onlyMethods(['withTextBody', 'withSubject', 'withTo'])
             ->getMockForAbstractClass()
         ;
 
-        $this->mailer = $this->getMockBuilder(BaseMailer::class)
-            ->onlyMethods(['compose'])
+        $this->mailer = $this->getMockBuilder(Mailer::class)
+            ->onlyMethods(['compose', 'send'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass()
         ;
 
-        $this->message->method('setTextBody')->willReturnSelf();
-        $this->message->method('setMailer')->willReturnSelf();
-        $this->message->method('setSubject')->willReturnSelf();
-        $this->message->method('setTo')->willReturnSelf();
+        $this->message->method('withTextBody')->willReturnSelf();
+        $this->message->method('withSubject')->willReturnSelf();
+        $this->message->method('withTo')->willReturnSelf();
         $this->mailer->method('compose')->willReturn($this->message);
     }
 
@@ -71,9 +70,8 @@ final class EmailTargetTest extends TestCase
 
         $textBody = $this->invokeFormatMessagesMethod($target);
 
-        $this->message->expects($this->once())->method('setTextBody')->with($this->equalTo($textBody));
-        $this->message->expects($this->once())->method('setMailer')->with($this->equalTo($this->mailer));
-        $this->message->expects($this->once())->method('setSubject')->with($this->equalTo('Hello world'));
+        $this->message->expects($this->once())->method('withTextBody')->with($this->equalTo($textBody));
+        $this->message->expects($this->once())->method('withSubject')->with($this->equalTo('Hello world'));
         $this->mailer->expects($this->once())->method('compose')->with($this->equalTo(null), $this->equalTo([]));
 
         $target->collect([], true);
@@ -96,9 +94,8 @@ final class EmailTargetTest extends TestCase
 
         $textBody = $this->invokeFormatMessagesMethod($target);
 
-        $this->message->expects($this->once())->method('setTextBody')->with($this->equalTo($textBody));
-        $this->message->expects($this->once())->method('setMailer')->with($this->equalTo($this->mailer));
-        $this->message->expects($this->once())->method('setSubject')->with($this->equalTo('Application Log'));
+        $this->message->expects($this->once())->method('withTextBody')->with($this->equalTo($textBody));
+        $this->message->expects($this->once())->method('withSubject')->with($this->equalTo('Application Log'));
         $this->mailer->expects($this->once())->method('compose')->with($this->equalTo(null), $this->equalTo([]));
 
         $target->collect([], true);
@@ -108,7 +105,7 @@ final class EmailTargetTest extends TestCase
     {
         $target = $this->createEmailTarget(['developer@example.com']);
 
-        $this->message->method('send')->willThrowException(new RuntimeException());
+        $this->mailer->method('send')->willThrowException(new RuntimeException());
 
         $this->expectException(RuntimeException::class);
         $target->collect([new Message(LogLevel::INFO, 'Message')], true);
