@@ -21,7 +21,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^7.4|^8.0",
-        "yiisoft/log": "^3.0@dev",
+        "yiisoft/log": "^1.0",
         "yiisoft/mailer": "^3.0@dev"
     },
     "require-dev": {
