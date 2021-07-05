@@ -28,6 +28,7 @@ final class EmailTarget extends Target
 
     /**
      * @var array|string The receiver email address.
+     * @psalm-var array<array-key, string>|string
      * You may pass an array of addresses if multiple recipients should receive this message.
      * You may also specify receiver name in addition to email address using format: `[email => name]`.
      */
@@ -41,6 +42,7 @@ final class EmailTarget extends Target
     /**
      * @param MailerInterface $mailer The mailer instance.
      * @param array|string $emailTo The receiver email address.
+     * @psalm-param array<array-key, string>|string $emailTo
      * You may pass an array of addresses if multiple recipients should receive this message.
      * You may also specify receiver name in addition to email address using format: `[email => name]`.
      * @param string $subjectEmail The email message subject.
@@ -51,6 +53,7 @@ final class EmailTarget extends Target
      */
     public function __construct(MailerInterface $mailer, $emailTo, string $subjectEmail = '')
     {
+        /** @psalm-suppress TypeDoesNotContainType */
         if (empty($emailTo) || (!is_string($emailTo) && !is_array($emailTo))) {
             throw new InvalidArgumentException('The "to" argument must be an array or string and must not be empty.');
         }
