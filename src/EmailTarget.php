@@ -45,6 +45,7 @@ final class EmailTarget extends Target
      * @psalm-param array<array-key, string>|string $emailTo
      * You may pass an array of addresses if multiple recipients should receive this message.
      * You may also specify receiver name in addition to email address using format: `[email => name]`.
+     *
      * @param string $subjectEmail The email message subject.
      *
      * @throws InvalidArgumentException If the "to" email message argument is invalid.
