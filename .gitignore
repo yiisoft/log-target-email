@@ -20,9 +20,5 @@ composer.lock
 phpunit.phar
 # local phpunit config
 /phpunit.xml
-
-# tests runtime
-/runtime
-
 # phpunit cache
 .phpunit.result.cache
