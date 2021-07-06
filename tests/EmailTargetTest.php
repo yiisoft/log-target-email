@@ -84,7 +84,7 @@ final class EmailTargetTest extends TestCase
         $target->collect([
             new Message(
                 LogLevel::INFO,
-                'A veeeeery loooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 3',
+                'A veeeeery looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 3',
             ),
             new Message(
                 LogLevel::INFO,
@@ -101,6 +101,24 @@ final class EmailTargetTest extends TestCase
         $target->collect([], true);
     }
 
+    public function testExportWithCheckWidthLine(): void
+    {
+        $target = $this->createEmailTarget(['developer1@example.com', 'developer2@example.com']);
+
+        $target->collect([
+            new Message(
+                LogLevel::INFO,
+                'A looooooooooooooooooooooooooooooooooooooooooooooooooooooooooong',
+            ),
+        ], false);
+
+        $this->message->expects($this->once())->method('withTextBody')->with($this->equalTo(
+            "[info] A\nlooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong\n",
+        ));
+
+        $target->collect([], true);
+    }
+
     public function testExportWithSendFailure(): void
     {
         $target = $this->createEmailTarget(['developer@example.com']);
@@ -108,6 +126,9 @@ final class EmailTargetTest extends TestCase
         $this->mailer->method('send')->willThrowException(new RuntimeException());
 
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unable to export log through email.');
+        $this->expectExceptionCode(0);
+
         $target->collect([new Message(LogLevel::INFO, 'Message')], true);
     }
 
@@ -132,6 +153,8 @@ final class EmailTargetTest extends TestCase
     public function testConstructThrownExceptionForInvalidEmailTo($emailTo): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The "to" argument must be an array or string and must not be empty.');
+
         new EmailTarget($this->mailer, $emailTo);
     }
 
