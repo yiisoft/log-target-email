@@ -1,6 +1,11 @@
 # Yii Log - Email Target Change Log
 
 
+## 3.0.1 under development
+
+- no changes in this release.
+
+
 ## 3.0.0 August 25, 2021
 
 - Chg: Use yiisoft/mailer ^3.0 (samdark)
