@@ -1,10 +1,9 @@
 # Yii Log - Email Target Change Log
 
 
-## 3.0.1 under development
+## 3.0.1 August 26, 2021
 
 - Bug #28: Remove `Psr\Log\LoggerInterface` definition from configuration for using multiple targets to application (devanych)
-
 
 ## 3.0.0 August 25, 2021
 
