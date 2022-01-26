@@ -15,7 +15,8 @@
         "issues": "https://github.com/yiisoft/log-target-email/issues",
         "forum": "https://www.yiiframework.com/forum/",
         "wiki": "https://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii"
+        "irc": "irc://irc.freenode.net/yii",
+        "chat": "https://t.me/yii3en"
     },
     "require": {
         "php": "^7.4|^8.0",
@@ -24,9 +25,9 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
-        "roave/infection-static-analysis-plugin": "^1.14",
+        "roave/infection-static-analysis-plugin": "^1.16",
         "spatie/phpunit-watcher": "^1.23",
-        "vimeo/psalm": "^4.8",
+        "vimeo/psalm": "^4.18",
         "yiisoft/event-dispatcher": "^1.0"
     },
     "autoload": {
