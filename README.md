@@ -17,6 +17,10 @@
 
 This package provides the Email target for the [yiisoft/log](https://github.com/yiisoft/log) library.
 
+## Requirements
+
+- PHP 7.4 or higher.
+
 ## Installation
 
 The package could be installed with composer:
