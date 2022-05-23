@@ -19,7 +19,7 @@ This package provides the Email target for the [yiisoft/log](https://github.com/
 
 ## Requirements
 
-- PHP 7.4 or higher.
+- PHP 8.0 or higher.
 
 ## Installation
 

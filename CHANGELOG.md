@@ -1,9 +1,9 @@
 # Yii Log - Email Target Change Log
 
 
-## 3.0.2 under development
+## 3.1.0 under development
 
-- no changes in this release.
+- Chg #29: Raise the minimum `yiisoft/log` version to `^2.0` and the minimum PHP version to 8.0 (rustamwin)
 
 
 ## 3.0.1 August 26, 2021
