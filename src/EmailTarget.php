@@ -72,7 +72,8 @@ final class EmailTarget extends Target
      */
     protected function export(): void
     {
-        $message = $this->mailer->compose()
+        $message = $this->mailer
+            ->compose()
             ->withTo($this->emailTo)
             ->withSubject($this->subjectEmail)
             ->withTextBody(wordwrap($this->formatMessages("\n"), 70))
