@@ -36,21 +36,31 @@ final class EmailTargetTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->message = $this->getMockBuilder(MessageInterface::class)
+        $this->message = $this
+            ->getMockBuilder(MessageInterface::class)
             ->onlyMethods(['withTextBody', 'withSubject', 'withTo'])
             ->getMockForAbstractClass()
         ;
 
-        $this->mailer = $this->getMockBuilder(Mailer::class)
+        $this->mailer = $this
+            ->getMockBuilder(Mailer::class)
             ->onlyMethods(['compose', 'send'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass()
         ;
 
-        $this->message->method('withTextBody')->willReturnSelf();
-        $this->message->method('withSubject')->willReturnSelf();
-        $this->message->method('withTo')->willReturnSelf();
-        $this->mailer->method('compose')->willReturn($this->message);
+        $this->message
+            ->method('withTextBody')
+            ->willReturnSelf();
+        $this->message
+            ->method('withSubject')
+            ->willReturnSelf();
+        $this->message
+            ->method('withTo')
+            ->willReturnSelf();
+        $this->mailer
+            ->method('compose')
+            ->willReturn($this->message);
     }
 
     public function testExportWithSubject(): void
@@ -70,9 +80,18 @@ final class EmailTargetTest extends TestCase
 
         $textBody = $this->invokeFormatMessagesMethod($target);
 
-        $this->message->expects($this->once())->method('withTextBody')->with($this->equalTo($textBody));
-        $this->message->expects($this->once())->method('withSubject')->with($this->equalTo('Hello world'));
-        $this->mailer->expects($this->once())->method('compose')->with($this->equalTo(null), $this->equalTo([]));
+        $this->message
+            ->expects($this->once())
+            ->method('withTextBody')
+            ->with($this->equalTo($textBody));
+        $this->message
+            ->expects($this->once())
+            ->method('withSubject')
+            ->with($this->equalTo('Hello world'));
+        $this->mailer
+            ->expects($this->once())
+            ->method('compose')
+            ->with($this->equalTo(null), $this->equalTo([]));
 
         $target->collect([], true);
     }
@@ -94,9 +113,18 @@ final class EmailTargetTest extends TestCase
 
         $textBody = $this->invokeFormatMessagesMethod($target);
 
-        $this->message->expects($this->once())->method('withTextBody')->with($this->equalTo($textBody));
-        $this->message->expects($this->once())->method('withSubject')->with($this->equalTo('Application Log'));
-        $this->mailer->expects($this->once())->method('compose')->with($this->equalTo(null), $this->equalTo([]));
+        $this->message
+            ->expects($this->once())
+            ->method('withTextBody')
+            ->with($this->equalTo($textBody));
+        $this->message
+            ->expects($this->once())
+            ->method('withSubject')
+            ->with($this->equalTo('Application Log'));
+        $this->mailer
+            ->expects($this->once())
+            ->method('compose')
+            ->with($this->equalTo(null), $this->equalTo([]));
 
         $target->collect([], true);
     }
@@ -112,9 +140,12 @@ final class EmailTargetTest extends TestCase
             ),
         ], false);
 
-        $this->message->expects($this->once())->method('withTextBody')->with($this->equalTo(
-            "[info] A\nlooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong\n",
-        ));
+        $this->message
+            ->expects($this->once())
+            ->method('withTextBody')
+            ->with($this->equalTo(
+                "[info] A\nlooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong\n",
+            ));
 
         $target->collect([], true);
     }
@@ -123,7 +154,9 @@ final class EmailTargetTest extends TestCase
     {
         $target = $this->createEmailTarget(['developer@example.com']);
 
-        $this->mailer->method('send')->willThrowException(new RuntimeException());
+        $this->mailer
+            ->method('send')
+            ->willThrowException(new RuntimeException());
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Unable to export log through email.');
