@@ -6,7 +6,6 @@ namespace Yiisoft\Log\Target\Email\Tests;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LogLevel;
 use ReflectionException;
 use ReflectionObject;
@@ -193,9 +192,7 @@ final class EmailTargetTest extends TestCase
     /**
      * Invokes the `EmailTarget::formatMessages()` protected method.
      *
-     *
      * @throws ReflectionException
-     *
      */
     private function invokeFormatMessagesMethod(EmailTarget $target): string
     {
