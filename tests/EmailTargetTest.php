@@ -21,15 +21,9 @@ use function wordwrap;
 
 final class EmailTargetTest extends TestCase
 {
-    /**
-     * @var Mailer|MockObject
-     */
-    private $mailer;
+    private \Yiisoft\Mailer\Mailer|\PHPUnit\Framework\MockObject\MockObject $mailer;
 
-    /**
-     * @var MessageInterface|MockObject
-     */
-    private $message;
+    private \Yiisoft\Mailer\MessageInterface|\PHPUnit\Framework\MockObject\MockObject $message;
 
     /**
      * Set up mailer.
@@ -180,10 +174,8 @@ final class EmailTargetTest extends TestCase
 
     /**
      * @dataProvider invalidEmailToDataProvider
-     *
-     * @param mixed $emailTo
      */
-    public function testConstructThrownExceptionForInvalidEmailTo($emailTo): void
+    public function testConstructThrownExceptionForInvalidEmailTo(mixed $emailTo): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The "to" argument must be an array or string and must not be empty.');
@@ -191,13 +183,7 @@ final class EmailTargetTest extends TestCase
         new EmailTarget($this->mailer, $emailTo);
     }
 
-    /**
-     * @param mixed $emailTo
-     * @param string $subjectEmail
-     *
-     * @return EmailTarget
-     */
-    private function createEmailTarget($emailTo, string $subjectEmail = ''): EmailTarget
+    private function createEmailTarget(mixed $emailTo, string $subjectEmail = ''): EmailTarget
     {
         $target = new EmailTarget($this->mailer, $emailTo, $subjectEmail);
         $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
@@ -207,11 +193,9 @@ final class EmailTargetTest extends TestCase
     /**
      * Invokes the `EmailTarget::formatMessages()` protected method.
      *
-     * @param EmailTarget $target
      *
      * @throws ReflectionException
      *
-     * @return string
      */
     private function invokeFormatMessagesMethod(EmailTarget $target): string
     {
