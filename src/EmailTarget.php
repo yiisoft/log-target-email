@@ -22,17 +22,12 @@ use function wordwrap;
 final class EmailTarget extends Target
 {
     /**
-     * @var MailerInterface The mailer instance.
-     */
-    private MailerInterface $mailer;
-
-    /**
      * @var array|string The receiver email address.
      * @psalm-var array<array-key, string>|string
      * You may pass an array of addresses if multiple recipients should receive this message.
      * You may also specify receiver name in addition to email address using format: `[email => name]`.
      */
-    private $emailTo;
+    private array|string $emailTo;
 
     /**
      * @var string The email message subject.
@@ -52,14 +47,12 @@ final class EmailTarget extends Target
      *
      * @psalm-suppress DocblockTypeContradiction
      */
-    public function __construct(MailerInterface $mailer, $emailTo, string $subjectEmail = '')
+    public function __construct(private MailerInterface $mailer, $emailTo, string $subjectEmail = '')
     {
         /** @psalm-suppress TypeDoesNotContainType */
         if (empty($emailTo) || (!is_string($emailTo) && !is_array($emailTo))) {
             throw new InvalidArgumentException('The "to" argument must be an array or string and must not be empty.');
         }
-
-        $this->mailer = $mailer;
         $this->emailTo = $emailTo;
         $this->subjectEmail = $subjectEmail ?: 'Application Log';
         parent::__construct();
