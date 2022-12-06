@@ -20,7 +20,7 @@ use function wordwrap;
 final class EmailTarget extends Target
 {
     /**
-     * @var string[]|string The receiver email address.
+     * @var string|string[] The receiver email address.
      * You may pass an array of addresses if multiple recipients should receive this message.
      * You may also specify receiver name in addition to email address using format: `[email => name]`.
      */
@@ -33,10 +33,9 @@ final class EmailTarget extends Target
 
     /**
      * @param MailerInterface $mailer The mailer instance.
-     * @param string[]|string $emailTo The receiver email address.
+     * @param string|string[] $emailTo The receiver email address.
      * You may pass an array of addresses if multiple recipients should receive this message.
      * You may also specify receiver name in addition to email address using format: `[email => name]`.
-     *
      * @param string $subjectEmail The email message subject.
      *
      * @throws InvalidArgumentException If the "to" email message argument is invalid.

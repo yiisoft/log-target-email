@@ -11,7 +11,6 @@ use Psr\Log\LogLevel;
 use ReflectionException;
 use ReflectionObject;
 use RuntimeException;
-use stdClass;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Email\EmailTarget;
 use Yiisoft\Mailer\Mailer;
