@@ -1,8 +1,8 @@
 # Yii Log - Email Target Change Log
 
-## 3.1.1 under development
+## 4.0.0 under development
 
-- no changes in this release.
+- Enh #39: In `EmailTarget` move type hints from phpdoc to constructor signature (@vjik)
 
 ## 3.1.0 May 23, 2022
 
