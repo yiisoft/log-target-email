@@ -10,8 +10,6 @@ use Throwable;
 use Yiisoft\Log\Target;
 use Yiisoft\Mailer\MailerInterface;
 
-use function is_array;
-use function is_string;
 use function wordwrap;
 
 /**
@@ -22,8 +20,7 @@ use function wordwrap;
 final class EmailTarget extends Target
 {
     /**
-     * @var array|string The receiver email address.
-     * @psalm-var array<array-key, string>|string
+     * @var string|string[] The receiver email address.
      * You may pass an array of addresses if multiple recipients should receive this message.
      * You may also specify receiver name in addition to email address using format: `[email => name]`.
      */
@@ -36,21 +33,19 @@ final class EmailTarget extends Target
 
     /**
      * @param MailerInterface $mailer The mailer instance.
-     * @param array|string $emailTo The receiver email address.
-     * @psalm-param array<array-key, string>|string $emailTo
+     * @param string|string[] $emailTo The receiver email address.
      * You may pass an array of addresses if multiple recipients should receive this message.
      * You may also specify receiver name in addition to email address using format: `[email => name]`.
-     *
      * @param string $subjectEmail The email message subject.
      *
      * @throws InvalidArgumentException If the "to" email message argument is invalid.
-     *
-     * @psalm-suppress DocblockTypeContradiction
      */
-    public function __construct(private MailerInterface $mailer, $emailTo, string $subjectEmail = '')
-    {
-        /** @psalm-suppress TypeDoesNotContainType */
-        if (empty($emailTo) || (!is_string($emailTo) && !is_array($emailTo))) {
+    public function __construct(
+        private MailerInterface $mailer,
+        array|string $emailTo,
+        string $subjectEmail = ''
+    ) {
+        if (empty($emailTo)) {
             throw new InvalidArgumentException('The "to" argument must be an array or string and must not be empty.');
         }
         $this->emailTo = $emailTo;

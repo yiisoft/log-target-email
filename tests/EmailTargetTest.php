@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Yiisoft\Log\Target\Email\Tests;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 use ReflectionException;
 use ReflectionObject;
 use RuntimeException;
-use stdClass;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Email\EmailTarget;
 use Yiisoft\Mailer\Mailer;
@@ -20,9 +20,8 @@ use function wordwrap;
 
 final class EmailTargetTest extends TestCase
 {
-    private \Yiisoft\Mailer\Mailer|\PHPUnit\Framework\MockObject\MockObject $mailer;
-
-    private \Yiisoft\Mailer\MessageInterface|\PHPUnit\Framework\MockObject\MockObject $message;
+    private Mailer|MockObject $mailer;
+    private MessageInterface|MockObject $message;
 
     /**
      * Set up mailer.
@@ -161,11 +160,6 @@ final class EmailTargetTest extends TestCase
     public function invalidEmailToDataProvider(): array
     {
         return [
-            'int' => [1],
-            'float' => [1.1],
-            'null' => [null],
-            'object' => [new stdClass()],
-            'callable' => [fn () => 'admin@example.com'],
             'empty-array' => [[]],
             'empty-string' => [''],
         ];
