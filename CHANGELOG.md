@@ -4,6 +4,7 @@
 
 - Enh #39: In `EmailTarget` move type hints from phpdoc to constructor signature (@vjik)
 - Enh #39: Add support of `yiisoft/mailer` version `^4.0` (@vjik)
+- Enh #40: Add support of `yiisoft/mailer` version `^5.0` (@vjik)
 
 ## 3.1.0 May 23, 2022
 
