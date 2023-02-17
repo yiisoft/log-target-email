@@ -30,6 +30,7 @@
         "roave/infection-static-analysis-plugin": "^1.25",
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^4.30|^5.1",
+        "yiisoft/di": "^1.2",
         "yiisoft/event-dispatcher": "^1.1"
     },
     "autoload": {
@@ -47,7 +48,7 @@
             "source-directory": "config"
         },
         "config-plugin": {
-            "common": "common.php",
+            "di": "di.php",
             "params": "params.php"
         }
     },
