@@ -1,5 +1,9 @@
 # Yii Log - Email Target Change Log
 
+## 4.0.1 under development
+
+- no changes in this release.
+
 ## 4.0.0 February 17, 2023
 
 - Chg #41: Adapt configuration group names to Yii conventions (@vjik)
