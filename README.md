@@ -25,7 +25,7 @@ This package provides the Email target for the [yiisoft/log](https://github.com/
 
 The package could be installed with composer:
 
-```
+```shell
 composer require yiisoft/log-target-email --prefer-dist
 ```
 
@@ -51,7 +51,7 @@ $logger = new \Yiisoft\Log\Logger([$emailTarget]);
 
 For a description of using the logger, see the [yiisoft/log](https://github.com/yiisoft/log) package.
 
-For use in the [Yii framework](http://www.yiiframework.com/), see the configuration files:
+For use in the [Yii framework](https://www.yiiframework.com/), see the configuration files:
 
 - [`config/common.php`](https://github.com/yiisoft/log-target-email/blob/master/config/common.php)
 - [`config/params.php`](https://github.com/yiisoft/log-target-email/blob/master/config/params.php)
