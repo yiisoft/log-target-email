@@ -23,10 +23,10 @@ This package provides the Email target for the [yiisoft/log](https://github.com/
 
 ## Installation
 
-The package could be installed with composer:
+The package could be installed via [composer](https://getcomposer.org/download/)
 
 ```shell
-composer require yiisoft/log-target-email --prefer-dist
+composer require yiisoft/log-target-email
 ```
 
 ## General usage
@@ -49,41 +49,17 @@ Creating a logger:
 $logger = new \Yiisoft\Log\Logger([$emailTarget]);
 ```
 
-For a description of using the logger, see the [yiisoft/log](https://github.com/yiisoft/log) package.
+## Documentation
 
-For use in the [Yii framework](https://www.yiiframework.com/), see the configuration files:
+- For a description of using the logger, see the [yiisoft/log](https://github.com/yiisoft/log) package.
+- For use in the [Yii framework](https://www.yiiframework.com/), see the configuration files:
+  - [`config/common.php`](https://github.com/yiisoft/log-target-email/blob/master/config/common.php)
+  - [`config/params.php`](https://github.com/yiisoft/log-target-email/blob/master/config/params.php)
+- See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
+- [Internals](docs/internals.md)
 
-- [`config/common.php`](https://github.com/yiisoft/log-target-email/blob/master/config/common.php)
-- [`config/params.php`](https://github.com/yiisoft/log-target-email/blob/master/config/params.php)
-
-See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
-
-## Testing
-
-### Unit testing
-
-The package is tested with [PHPUnit](https://phpunit.de/). To run tests:
-
-```shell
-./vendor/bin/phpunit
-```
-
-### Mutation testing
-
-The package tests are checked with [Infection](https://infection.github.io/) mutation framework with
-[Infection Static Analysis Plugin](https://github.com/Roave/infection-static-analysis-plugin). To run it:
-
-```shell
-./vendor/bin/roave-infection-static-analysis-plugin
-```
-
-### Static analysis
-
-The code is statically analyzed with [Psalm](https://psalm.dev/). To run static analysis:
-
-```shell
-./vendor/bin/psalm
-```
+If you need help or have a question, the [Yii Forum](https://forum.yiiframework.com/c/yii-3-0/63) is a good place
+for that. You may also check out other [Yii Community Resources](https://www.yiiframework.com/community).
 
 ## License
 
