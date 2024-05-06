@@ -23,7 +23,7 @@ This package provides the Email target for the [yiisoft/log](https://github.com/
 
 ## Installation
 
-The package could be installed via [composer](https://getcomposer.org/download/)
+The package could be installed with [Composer](https://getcomposer.org):
 
 ```shell
 composer require yiisoft/log-target-email
