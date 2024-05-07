@@ -50,7 +50,7 @@ $logger = new \Yiisoft\Log\Logger([$emailTarget]);
 ```
 
 For use in the [Yii framework](https://www.yiiframework.com/), see the configuration files:
-- [`config/common.php`](https://github.com/yiisoft/log-target-email/blob/master/config/common.php)
+- [`config/di.php`](https://github.com/yiisoft/log-target-email/blob/master/config/di.php)
 - [`config/params.php`](https://github.com/yiisoft/log-target-email/blob/master/config/params.php)
 
 ## Documentation
