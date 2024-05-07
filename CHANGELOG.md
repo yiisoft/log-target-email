@@ -1,4 +1,4 @@
-# Yii Log - Email Target Change Log
+# Yii Logging Library - Email Target Change Log
 
 ## 4.0.1 under development
 
