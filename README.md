@@ -49,13 +49,15 @@ Creating a logger:
 $logger = new \Yiisoft\Log\Logger([$emailTarget]);
 ```
 
+For use in the [Yii framework](https://www.yiiframework.com/), see the configuration files:
+- [`config/common.php`](https://github.com/yiisoft/log-target-email/blob/master/config/common.php)
+- [`config/params.php`](https://github.com/yiisoft/log-target-email/blob/master/config/params.php)
+
 ## Documentation
 
-- For a description of using the logger, see the [yiisoft/log](https://github.com/yiisoft/log) package.
-- For use in the [Yii framework](https://www.yiiframework.com/), see the configuration files:
-  - [`config/common.php`](https://github.com/yiisoft/log-target-email/blob/master/config/common.php)
-  - [`config/params.php`](https://github.com/yiisoft/log-target-email/blob/master/config/params.php)
-- See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
+For a description of using the logger, see the [yiisoft/log](https://github.com/yiisoft/log) package.
+
+- [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md)
 - [Internals](docs/internals.md)
 
 If you need help or have a question, the [Yii Forum](https://forum.yiiframework.com/c/yii-3-0/63) is a good place
