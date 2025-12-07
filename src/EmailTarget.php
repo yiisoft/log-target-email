@@ -37,20 +37,22 @@ final class EmailTarget extends Target
      * You may pass an array of addresses if multiple recipients should receive this message.
      * You may also specify receiver name in addition to email address using format: `[email => name]`.
      * @param string $subjectEmail The email message subject.
+     * @param string[] $levels The log message levels that this target is interested in.
      *
      * @throws InvalidArgumentException If the "to" email message argument is invalid.
      */
     public function __construct(
         private MailerInterface $mailer,
         array|string $emailTo,
-        string $subjectEmail = ''
+        string $subjectEmail = '',
+        array $levels = []
     ) {
         if (empty($emailTo)) {
             throw new InvalidArgumentException('The "to" argument must be an array or string and must not be empty.');
         }
         $this->emailTo = $emailTo;
         $this->subjectEmail = $subjectEmail ?: 'Application Log';
-        parent::__construct();
+        parent::__construct($levels);
     }
 
     /**
