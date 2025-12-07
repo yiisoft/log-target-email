@@ -194,7 +194,7 @@ final class EmailTargetTest extends TestCase
 
         // Verify that only INFO and ERROR messages are collected
         $textBody = $this->invokeFormatMessagesMethod($target);
-        
+
         $this->message
             ->expects($this->once())
             ->method('withTextBody')
@@ -226,7 +226,7 @@ final class EmailTargetTest extends TestCase
 
         // Verify that all messages are collected when levels array is empty
         $textBody = $this->invokeFormatMessagesMethod($target);
-        
+
         $this->message
             ->expects($this->once())
             ->method('withTextBody')
