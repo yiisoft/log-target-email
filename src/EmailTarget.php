@@ -37,7 +37,7 @@ final class EmailTarget extends Target
      * You may pass an array of addresses if multiple recipients should receive this message.
      * You may also specify receiver name in addition to email address using format: `[email => name]`.
      * @param string $subjectEmail The email message subject.
-     * @param string[] $levels The log message levels that this target is interested in.
+     * @param string[] $levels The {@see \Psr\Log\LogLevel log message levels} that this target is interested in.
      *
      * @throws InvalidArgumentException If the "to" email message argument is invalid.
      */
