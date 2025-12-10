@@ -45,7 +45,7 @@ $emailTarget = new \Yiisoft\Log\Target\Email\EmailTarget($mailer, $emailTo, $sub
 - `$levels (array)` - Optional. The log message levels that this target is interested in. Defaults to `[]` (all levels).
   For example: `[LogLevel::ERROR, LogLevel::WARNING]`.
 
-### Example with level filtering
+Example with level filtering:
 
 ```php
 use Psr\Log\LogLevel;
