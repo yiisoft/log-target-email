@@ -34,14 +34,30 @@ composer require yiisoft/log-target-email
 Creating a target:
 
 ```php
-$emailTarget = new \Yiisoft\Log\Target\Email\EmailTarget($mailer, $emailTo, $subjectEmail);
+$emailTarget = new \Yiisoft\Log\Target\Email\EmailTarget($mailer, $emailTo, $subjectEmail, $levels);
 ```
 
 - `$mailer (\Yiisoft\Mailer\MailerInterface)` - The mailer instance that sends email and should be already configured.
-- `$emailTo (strig|array)` - The receiver email address.
+- `$emailTo (string|array)` - The receiver email address.
   You may pass an array of addresses if multiple recipients should receive this message.
   You may also specify receiver name in addition to email address using format: `[email => name]`.
 - `$subjectEmail (string)` - The email message subject. Defaults to `Application Log`.
+- `$levels (array)` - Optional. The log message levels that this target is interested in. Defaults to `[]` (all levels).
+  For example: `[LogLevel::ERROR, LogLevel::WARNING]`.
+
+Example with level filtering:
+
+```php
+use Psr\Log\LogLevel;
+
+// Only log ERROR and WARNING messages
+$emailTarget = new \Yiisoft\Log\Target\Email\EmailTarget(
+    $mailer, 
+    'admin@example.com', 
+    'Application Errors',
+    [LogLevel::ERROR, LogLevel::WARNING]
+);
+```
 
 Creating a logger:
 

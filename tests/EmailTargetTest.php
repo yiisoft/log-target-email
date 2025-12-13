@@ -176,6 +176,70 @@ final class EmailTargetTest extends TestCase
         new EmailTarget($this->mailer, $emailTo);
     }
 
+    public function testSetLevelsViaConstructor(): void
+    {
+        $target = new EmailTarget(
+            $this->mailer,
+            'developer@example.com',
+            'Test Subject',
+            [LogLevel::ERROR, LogLevel::INFO]
+        );
+        $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
+
+        $target->collect([
+            new Message(LogLevel::INFO, 'message-1'),
+            new Message(LogLevel::DEBUG, 'message-2'),
+            new Message(LogLevel::ERROR, 'message-3'),
+        ], false);
+
+        // Verify that only INFO and ERROR messages are collected
+        $textBody = $this->invokeFormatMessagesMethod($target);
+
+        $this->message
+            ->expects($this->once())
+            ->method('withTextBody')
+            ->with($this->equalTo($textBody));
+
+        $target->collect([], true);
+
+        // Check that the formatted message contains only message-1 and message-3
+        $this->assertStringContainsString('message-1', $textBody);
+        $this->assertStringContainsString('message-3', $textBody);
+        $this->assertStringNotContainsString('message-2', $textBody);
+    }
+
+    public function testSetLevelsViaConstructorWithEmptyArray(): void
+    {
+        $target = new EmailTarget(
+            $this->mailer,
+            'developer@example.com',
+            'Test Subject',
+            []
+        );
+        $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
+
+        $target->collect([
+            new Message(LogLevel::INFO, 'message-1'),
+            new Message(LogLevel::DEBUG, 'message-2'),
+            new Message(LogLevel::ERROR, 'message-3'),
+        ], false);
+
+        // Verify that all messages are collected when levels array is empty
+        $textBody = $this->invokeFormatMessagesMethod($target);
+
+        $this->message
+            ->expects($this->once())
+            ->method('withTextBody')
+            ->with($this->equalTo($textBody));
+
+        $target->collect([], true);
+
+        // Check that the formatted message contains all messages
+        $this->assertStringContainsString('message-1', $textBody);
+        $this->assertStringContainsString('message-2', $textBody);
+        $this->assertStringContainsString('message-3', $textBody);
+    }
+
     private function createEmailTarget(mixed $emailTo, string $subjectEmail = ''): EmailTarget
     {
         $target = new EmailTarget($this->mailer, $emailTo, $subjectEmail);

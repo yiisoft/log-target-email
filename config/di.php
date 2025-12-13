@@ -5,18 +5,15 @@ declare(strict_types=1);
 use Yiisoft\Log\Target\Email\EmailTarget;
 use Yiisoft\Mailer\MailerInterface;
 
-/* @var $params array */
+/** @var array $params */
 
 return [
     EmailTarget::class => static function (MailerInterface $mailer) use ($params) {
-        $emailTarget = new EmailTarget(
-            $mailer,
-            $params['yiisoft/log-target-email']['emailTarget']['emailTo'],
-            $params['yiisoft/log-target-email']['emailTarget']['subjectEmail'],
+        return new EmailTarget(
+            mailer: $mailer,
+            emailTo: $params['yiisoft/log-target-email']['emailTarget']['emailTo'],
+            subjectEmail: $params['yiisoft/log-target-email']['emailTarget']['subjectEmail'],
+            levels: $params['yiisoft/log-target-email']['emailTarget']['levels'],
         );
-
-        $emailTarget->setLevels($params['yiisoft/log-target-email']['emailTarget']['levels']);
-
-        return $emailTarget;
     },
 ];

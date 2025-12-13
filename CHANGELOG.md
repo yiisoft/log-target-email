@@ -2,7 +2,7 @@
 
 ## 4.0.1 under development
 
-- no changes in this release.
+- New #60: Add optional `$levels` parameter to `EmailTarget` constructor for log level filtering at instantiation (@samdark)
 
 ## 4.0.0 February 17, 2023
 
