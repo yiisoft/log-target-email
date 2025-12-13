@@ -1,5 +1,9 @@
 # Yii Logging Library - Email Target Change Log
 
+## 4.1.1 under development
+
+- no changes in this release.
+
 ## 4.1.0 December 13, 2025
 
 - New #60: Add optional `$levels` parameter to `EmailTarget` constructor for log level filtering at instantiation (@samdark)
