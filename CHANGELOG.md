@@ -2,7 +2,7 @@
 
 ## 4.1.1 under development
 
-- no changes in this release.
+- Enh #62: Explicitly import classes in "use" section (@mspirkov)
 
 ## 4.1.0 December 13, 2025
 
