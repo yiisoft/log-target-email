@@ -62,11 +62,11 @@ final class EmailTargetTest extends TestCase
         $target->collect([
             new Message(
                 LogLevel::INFO,
-                'A very looooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 1'
+                'A very looooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 1',
             ),
             new Message(
                 LogLevel::INFO,
-                'A very looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 2'
+                'A very looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 2',
             ),
         ], false);
 
@@ -99,7 +99,7 @@ final class EmailTargetTest extends TestCase
             ),
             new Message(
                 LogLevel::INFO,
-                'Message 4'
+                'Message 4',
             ),
         ], false);
 
@@ -182,9 +182,9 @@ final class EmailTargetTest extends TestCase
             $this->mailer,
             'developer@example.com',
             'Test Subject',
-            [LogLevel::ERROR, LogLevel::INFO]
+            [LogLevel::ERROR, LogLevel::INFO],
         );
-        $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
+        $target->setFormat(fn(Message $message) => "[{$message->level()}] {$message->message()}");
 
         $target->collect([
             new Message(LogLevel::INFO, 'message-1'),
@@ -214,9 +214,9 @@ final class EmailTargetTest extends TestCase
             $this->mailer,
             'developer@example.com',
             'Test Subject',
-            []
+            [],
         );
-        $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
+        $target->setFormat(fn(Message $message) => "[{$message->level()}] {$message->message()}");
 
         $target->collect([
             new Message(LogLevel::INFO, 'message-1'),
@@ -243,7 +243,7 @@ final class EmailTargetTest extends TestCase
     private function createEmailTarget(mixed $emailTo, string $subjectEmail = ''): EmailTarget
     {
         $target = new EmailTarget($this->mailer, $emailTo, $subjectEmail);
-        $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
+        $target->setFormat(fn(Message $message) => "[{$message->level()}] {$message->message()}");
         return $target;
     }
 

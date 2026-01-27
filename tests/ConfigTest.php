@@ -10,6 +10,8 @@ use Yiisoft\Di\ContainerConfig;
 use Yiisoft\Log\Target\Email\EmailTarget;
 use Yiisoft\Mailer\MailerInterface;
 
+use function dirname;
+
 final class ConfigTest extends TestCase
 {
     public function testBase(): void
@@ -26,11 +28,10 @@ final class ConfigTest extends TestCase
         return new Container(
             ContainerConfig::create()->withDefinitions(
                 $this->getDiConfig($params)
-                +
-                [
+                + [
                     MailerInterface::class => $this->createMock(MailerInterface::class),
-                ]
-            )
+                ],
+            ),
         );
     }
 
