@@ -9,6 +9,7 @@ use RuntimeException;
 use Throwable;
 use Yiisoft\Log\Target;
 use Yiisoft\Mailer\MailerInterface;
+use Psr\Log\LogLevel;
 
 use function wordwrap;
 
@@ -37,7 +38,7 @@ final class EmailTarget extends Target
      * You may pass an array of addresses if multiple recipients should receive this message.
      * You may also specify receiver name in addition to email address using format: `[email => name]`.
      * @param string $subjectEmail The email message subject.
-     * @param string[] $levels The {@see \Psr\Log\LogLevel log message levels} that this target is interested in.
+     * @param string[] $levels The {@see LogLevel log message levels} that this target is interested in.
      *
      * @throws InvalidArgumentException If the "to" email message argument is invalid.
      */
@@ -45,7 +46,7 @@ final class EmailTarget extends Target
         private MailerInterface $mailer,
         array|string $emailTo,
         string $subjectEmail = '',
-        array $levels = []
+        array $levels = [],
     ) {
         if (empty($emailTo)) {
             throw new InvalidArgumentException('The "to" argument must be an array or string and must not be empty.');
