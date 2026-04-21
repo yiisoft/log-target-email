@@ -20,8 +20,5 @@ permissions:
 jobs:
   mutation:
     uses: yiisoft/actions/.github/workflows/roave-infection.yml@master
-    with:
-      php: >-
-        ['8.4']
     secrets:
       STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
