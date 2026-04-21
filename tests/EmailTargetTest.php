@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yiisoft\Log\Target\Email\Tests;
 
 use InvalidArgumentException;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 use ReflectionException;
