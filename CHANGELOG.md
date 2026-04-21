@@ -4,6 +4,7 @@
 
 - Enh #62: Explicitly import classes in "use" section (@mspirkov)
 - Chg #65: Change PHP constraint in `composer.json` to `8.1 - 8.5` (@vjik)
+- Chg #66: Raise the minimum `yiisoft/mailer` version to `^6.0` and adapt the code accordingly (@vjik)
 
 ## 4.1.0 December 13, 2025
 
