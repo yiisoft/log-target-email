@@ -1,8 +1,9 @@
 # Yii Logging Library - Email Target Change Log
 
-## 4.1.1 under development
+## 4.2.0 under development
 
 - Enh #62: Explicitly import classes in "use" section (@mspirkov)
+- Chg #65: Change PHP constraint in `composer.json` to `8.1 - 8.5` (@vjik)
 
 ## 4.1.0 December 13, 2025
 

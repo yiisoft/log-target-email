@@ -256,9 +256,6 @@ final class EmailTargetTest extends TestCase
     {
         $reflection = new ReflectionObject($target);
         $method = $reflection->getMethod('formatMessages');
-        $method->setAccessible(true);
-        $result = wordwrap($method->invokeArgs($target, ["\n"]), 70);
-        $method->setAccessible(false);
-        return $result;
+        return wordwrap($method->invokeArgs($target, ["\n"]), 70);
     }
 }
