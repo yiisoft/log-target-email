@@ -1,5 +1,9 @@
 # Yii Logging Library - Email Target Change Log
 
+## 4.2.1 under development
+
+- no changes in this release.
+
 ## 4.2.0 April 22, 2026
 
 - Chg #65: Change PHP constraint in `composer.json` to `8.1 - 8.5` (@vjik)
