@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yiisoft\Log\Target\Email\Tests;
 
 use InvalidArgumentException;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 use ReflectionException;
@@ -13,51 +12,17 @@ use ReflectionObject;
 use RuntimeException;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Email\EmailTarget;
-use Yiisoft\Mailer\Mailer;
-use Yiisoft\Mailer\MessageInterface;
+use Yiisoft\Mailer\MailerInterface;
+use Yiisoft\Mailer\StubMailer;
 
 use function wordwrap;
 
 final class EmailTargetTest extends TestCase
 {
-    private Mailer|MockObject $mailer;
-    private MessageInterface|MockObject $message;
-
-    /**
-     * Set up mailer.
-     */
-    protected function setUp(): void
-    {
-        $this->message = $this
-            ->getMockBuilder(MessageInterface::class)
-            ->onlyMethods(['withTextBody', 'withSubject', 'withTo'])
-            ->getMockForAbstractClass()
-        ;
-
-        $this->mailer = $this
-            ->getMockBuilder(Mailer::class)
-            ->onlyMethods(['compose', 'send'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass()
-        ;
-
-        $this->message
-            ->method('withTextBody')
-            ->willReturnSelf();
-        $this->message
-            ->method('withSubject')
-            ->willReturnSelf();
-        $this->message
-            ->method('withTo')
-            ->willReturnSelf();
-        $this->mailer
-            ->method('compose')
-            ->willReturn($this->message);
-    }
-
     public function testExportWithSubject(): void
     {
-        $target = $this->createEmailTarget('developer@example.com', 'Hello world');
+        $mailer = new StubMailer();
+        $target = $this->createEmailTarget($mailer, 'developer@example.com', 'Hello world');
 
         $target->collect([
             new Message(
@@ -71,26 +36,19 @@ final class EmailTargetTest extends TestCase
         ], false);
 
         $textBody = $this->invokeFormatMessagesMethod($target);
-
-        $this->message
-            ->expects($this->once())
-            ->method('withTextBody')
-            ->with($this->equalTo($textBody));
-        $this->message
-            ->expects($this->once())
-            ->method('withSubject')
-            ->with($this->equalTo('Hello world'));
-        $this->mailer
-            ->expects($this->once())
-            ->method('compose')
-            ->with($this->equalTo(null), $this->equalTo([]));
-
         $target->collect([], true);
+
+        $messages = $mailer->getMessages();
+        $this->assertCount(1, $messages);
+        $this->assertSame('Hello world', $messages[0]->getSubject());
+        $this->assertSame('developer@example.com', $messages[0]->getTo());
+        $this->assertSame($textBody, $messages[0]->getTextBody());
     }
 
     public function testExportWithoutSubject(): void
     {
-        $target = $this->createEmailTarget(['developer1@example.com', 'developer2@example.com']);
+        $mailer = new StubMailer();
+        $target = $this->createEmailTarget($mailer, ['developer1@example.com', 'developer2@example.com']);
 
         $target->collect([
             new Message(
@@ -104,26 +62,19 @@ final class EmailTargetTest extends TestCase
         ], false);
 
         $textBody = $this->invokeFormatMessagesMethod($target);
-
-        $this->message
-            ->expects($this->once())
-            ->method('withTextBody')
-            ->with($this->equalTo($textBody));
-        $this->message
-            ->expects($this->once())
-            ->method('withSubject')
-            ->with($this->equalTo('Application Log'));
-        $this->mailer
-            ->expects($this->once())
-            ->method('compose')
-            ->with($this->equalTo(null), $this->equalTo([]));
-
         $target->collect([], true);
+
+        $messages = $mailer->getMessages();
+        $this->assertCount(1, $messages);
+        $this->assertSame('Application Log', $messages[0]->getSubject());
+        $this->assertSame(['developer1@example.com', 'developer2@example.com'], $messages[0]->getTo());
+        $this->assertSame($textBody, $messages[0]->getTextBody());
     }
 
     public function testExportWithCheckWidthLine(): void
     {
-        $target = $this->createEmailTarget(['developer1@example.com', 'developer2@example.com']);
+        $mailer = new StubMailer();
+        $target = $this->createEmailTarget($mailer, ['developer1@example.com', 'developer2@example.com']);
 
         $target->collect([
             new Message(
@@ -132,29 +83,30 @@ final class EmailTargetTest extends TestCase
             ),
         ], false);
 
-        $this->message
-            ->expects($this->once())
-            ->method('withTextBody')
-            ->with($this->equalTo(
-                "[info] A\nlooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong\n",
-            ));
-
         $target->collect([], true);
+
+        $messages = $mailer->getMessages();
+        $this->assertCount(1, $messages);
+        $this->assertSame(
+            "[info] A\nlooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong\n",
+            $messages[0]->getTextBody(),
+        );
     }
 
     public function testExportWithSendFailure(): void
     {
-        $target = $this->createEmailTarget(['developer@example.com']);
+        $mailer = $this->createMock(MailerInterface::class);
+        $mailer->method('send')->willThrowException(new RuntimeException());
 
-        $this->mailer
-            ->method('send')
-            ->willThrowException(new RuntimeException());
+        $target = new EmailTarget($mailer, ['developer@example.com']);
+        $target->setFormat(fn(Message $message) => "[{$message->level()}] {$message->message()}");
+
+        $message = new Message(LogLevel::INFO, 'Message');
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Unable to export log through email.');
         $this->expectExceptionCode(0);
-
-        $target->collect([new Message(LogLevel::INFO, 'Message')], true);
+        $target->collect([$message], true);
     }
 
     public function invalidEmailToDataProvider(): array
@@ -170,16 +122,18 @@ final class EmailTargetTest extends TestCase
      */
     public function testConstructThrownExceptionForInvalidEmailTo(mixed $emailTo): void
     {
+        $mailer = new StubMailer();
+
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The "to" argument must be an array or string and must not be empty.');
-
-        new EmailTarget($this->mailer, $emailTo);
+        new EmailTarget($mailer, $emailTo);
     }
 
     public function testSetLevelsViaConstructor(): void
     {
+        $mailer = new StubMailer();
         $target = new EmailTarget(
-            $this->mailer,
+            $mailer,
             'developer@example.com',
             'Test Subject',
             [LogLevel::ERROR, LogLevel::INFO],
@@ -192,17 +146,12 @@ final class EmailTargetTest extends TestCase
             new Message(LogLevel::ERROR, 'message-3'),
         ], false);
 
-        // Verify that only INFO and ERROR messages are collected
         $textBody = $this->invokeFormatMessagesMethod($target);
-
-        $this->message
-            ->expects($this->once())
-            ->method('withTextBody')
-            ->with($this->equalTo($textBody));
-
         $target->collect([], true);
 
-        // Check that the formatted message contains only message-1 and message-3
+        $messages = $mailer->getMessages();
+        $this->assertCount(1, $messages);
+        $this->assertSame($textBody, $messages[0]->getTextBody());
         $this->assertStringContainsString('message-1', $textBody);
         $this->assertStringContainsString('message-3', $textBody);
         $this->assertStringNotContainsString('message-2', $textBody);
@@ -210,8 +159,9 @@ final class EmailTargetTest extends TestCase
 
     public function testSetLevelsViaConstructorWithEmptyArray(): void
     {
+        $mailer = new StubMailer();
         $target = new EmailTarget(
-            $this->mailer,
+            $mailer,
             'developer@example.com',
             'Test Subject',
             [],
@@ -224,25 +174,20 @@ final class EmailTargetTest extends TestCase
             new Message(LogLevel::ERROR, 'message-3'),
         ], false);
 
-        // Verify that all messages are collected when levels array is empty
         $textBody = $this->invokeFormatMessagesMethod($target);
-
-        $this->message
-            ->expects($this->once())
-            ->method('withTextBody')
-            ->with($this->equalTo($textBody));
-
         $target->collect([], true);
 
-        // Check that the formatted message contains all messages
+        $messages = $mailer->getMessages();
+        $this->assertCount(1, $messages);
+        $this->assertSame($textBody, $messages[0]->getTextBody());
         $this->assertStringContainsString('message-1', $textBody);
         $this->assertStringContainsString('message-2', $textBody);
         $this->assertStringContainsString('message-3', $textBody);
     }
 
-    private function createEmailTarget(mixed $emailTo, string $subjectEmail = ''): EmailTarget
+    private function createEmailTarget(StubMailer $mailer, mixed $emailTo, string $subjectEmail = ''): EmailTarget
     {
-        $target = new EmailTarget($this->mailer, $emailTo, $subjectEmail);
+        $target = new EmailTarget($mailer, $emailTo, $subjectEmail);
         $target->setFormat(fn(Message $message) => "[{$message->level()}] {$message->message()}");
         return $target;
     }

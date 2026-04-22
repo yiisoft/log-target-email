@@ -9,6 +9,7 @@ use RuntimeException;
 use Throwable;
 use Yiisoft\Log\Target;
 use Yiisoft\Mailer\MailerInterface;
+use Yiisoft\Mailer\Message;
 use Psr\Log\LogLevel;
 
 use function wordwrap;
@@ -43,7 +44,7 @@ final class EmailTarget extends Target
      * @throws InvalidArgumentException If the "to" email message argument is invalid.
      */
     public function __construct(
-        private MailerInterface $mailer,
+        private readonly MailerInterface $mailer,
         array|string $emailTo,
         string $subjectEmail = '',
         array $levels = [],
@@ -63,12 +64,11 @@ final class EmailTarget extends Target
      */
     protected function export(): void
     {
-        $message = $this->mailer
-            ->compose()
-            ->withTo($this->emailTo)
-            ->withSubject($this->subjectEmail)
-            ->withTextBody(wordwrap($this->formatMessages("\n"), 70))
-        ;
+        $message = new Message(
+            to: $this->emailTo,
+            subject: $this->subjectEmail,
+            textBody: wordwrap($this->formatMessages("\n"), 70),
+        );
 
         try {
             $this->mailer->send($message);
