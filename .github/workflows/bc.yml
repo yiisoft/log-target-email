@@ -1,3 +1,5 @@
+name: backwards compatibility
+
 on:
   pull_request:
     paths: &paths
@@ -9,10 +11,12 @@ on:
     branches: ['master']
     paths: *paths
 
-name: backwards compatibility
-
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   roave_bc_check:
